@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 17, 2026 at 04:33 AM
+-- Generation Time: Mar 17, 2026 at 03:42 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -38,7 +38,8 @@ CREATE TABLE `announcements` (
 --
 
 INSERT INTO `announcements` (`id`, `message`, `created_at`) VALUES
-(3, 'Important Announcement We are excited to announce the launch of our new website! 🎉 Explore our latest products and services now!', '2026-03-17 00:58:15');
+(3, 'Important Announcement We are excited to announce the launch of our new website! 🎉 Explore our latest products and services now!', '2026-03-17 00:58:15'),
+(12, 'TIDERT', '2026-03-17 14:33:57');
 
 -- --------------------------------------------------------
 
@@ -51,6 +52,7 @@ CREATE TABLE `sitin_records` (
   `id_number` varchar(50) NOT NULL,
   `purpose` varchar(255) NOT NULL,
   `lab` varchar(100) NOT NULL,
+  `remaining_sessions` int(11) NOT NULL DEFAULT 30,
   `time_in` timestamp NOT NULL DEFAULT current_timestamp(),
   `time_out` timestamp NULL DEFAULT NULL,
   `status` varchar(20) DEFAULT 'Active'
@@ -60,9 +62,12 @@ CREATE TABLE `sitin_records` (
 -- Dumping data for table `sitin_records`
 --
 
-INSERT INTO `sitin_records` (`id`, `id_number`, `purpose`, `lab`, `time_in`, `time_out`, `status`) VALUES
-(6, '21539101', 'JAVA', '302', '2026-03-17 03:25:25', NULL, 'Active'),
-(7, '21539102', 'C', '300', '2026-03-17 03:29:12', NULL, 'Active');
+INSERT INTO `sitin_records` (`id`, `id_number`, `purpose`, `lab`, `remaining_sessions`, `time_in`, `time_out`, `status`) VALUES
+(6, '21539101', 'JAVA', '302', 30, '2026-03-17 03:25:25', NULL, 'Active'),
+(7, '21539102', 'C', '300', 30, '2026-03-17 03:29:12', NULL, 'Active'),
+(8, '21539103', 'C', '524', 30, '2026-03-17 14:32:40', NULL, 'Active'),
+(9, '21539103', 'C', '524', 30, '2026-03-17 14:32:58', NULL, 'Active'),
+(10, '21539103', 'Java', '302', 30, '2026-03-17 14:33:22', NULL, 'Active');
 
 -- --------------------------------------------------------
 
@@ -95,7 +100,8 @@ INSERT INTO `students` (`id`, `id_number`, `last_name`, `first_name`, `middle_na
 (11, '21539101', 'Silva', 'Michael', 'Jackson', 'BS Elementary Education', 'michaeljohnsilva6@gmail.com', '$2y$10$h0K3VG.LFuvyS0/b8KIEquzJ5y.ZehkOM.4eBsl8P1Xp.Vwrl63m6', 'Cebu City', '2026-03-14 15:13:38', 'active', 'student', 'uploads/1773526779_Screenshot 2026-03-15 053918.png', 27),
 (22, '21539101', 'Silva', 'Michael', 'John', 'BS Elementary Education', 'michaeljohnsilva55@gmail.com', '$2y$10$twkODgrqmOjsCOew4CE7/ecLSGMuTm5yEeVHCwHW.xYKx5zwCMyhi', 'Cebu City', '2026-03-14 15:45:44', 'active', 'student', 'uploads/profile_22.png', 27),
 (27, '00000001', 'Admin', 'System', '', 'Administrator', 'admin@ccs.com', '$2y$10$8ltlTYfSn4BmyWVOOTfXUuQ8Smt5T.vx/sOnRWDq.7pTTDxR4PEGG', 'System', '2026-03-14 16:00:37', 'active', 'admin', NULL, 30),
-(28, '21539102', 'Woo', 'Michael John', 'Silva', 'BS Hotel & Restaurant Management', 'mjsilva@gmail.com', '$2y$10$604VTM75APNSCa89PKlrb.solH44xLa0NYYJPznPT5Za17nmh5G5W', 'Cebu City', '2026-03-17 03:28:22', '', 'student', NULL, 29);
+(28, '21539102', 'Woo', 'Michael John', 'Silva', 'BS Hotel & Restaurant Management', 'mjsilva@gmail.com', '$2y$10$604VTM75APNSCa89PKlrb.solH44xLa0NYYJPznPT5Za17nmh5G5W', 'Cebu City', '2026-03-17 03:28:22', '', 'student', NULL, 29),
+(29, '21539103', 'Silva', 'MJ', 'Santillan', 'BS Information Technology', 'mjsilva1@gmail.com', '$2y$10$W/gbLXoxHGlE98J2S6hlYuboK1/f3m23WVgmNj3Oe5aDJRP2PnRmu', 'Cebu City', '2026-03-17 14:14:39', '', 'student', NULL, 27);
 
 --
 -- Indexes for dumped tables
@@ -127,19 +133,19 @@ ALTER TABLE `students`
 -- AUTO_INCREMENT for table `announcements`
 --
 ALTER TABLE `announcements`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `sitin_records`
 --
 ALTER TABLE `sitin_records`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `students`
 --
 ALTER TABLE `students`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
