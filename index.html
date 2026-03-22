@@ -1,43 +1,304 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CCS | Home</title>
-<link rel="stylesheet" href="styles.css">
-<link rel="icon" href="uclogo.png" type="image/png" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CCS | Home</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="uclogo.png" type="image/png" />
+  <style>
+  /* GENERAL STYLES */
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f5f5f5;
+  position: relative;
+  opacity: 0;
+  animation: fadeIn 1s forwards;
+}
+
+/* Navbar Transition */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* NAVBAR STYLES */
+.topnav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #4a4a4a, #2e2e2e);
+  padding: 10px 30px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: background 0.3s ease-in-out;
+  position: relative; /* important for z-index context */
+  z-index: 10000; /* ensure navbar is above main content */
+  perspective: 700px; /* for 3D effect */
+}
+
+#title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+#uc {
+  height: 45px;
+  width: 45px;
+  border-radius: 50%;
+}
+
+.topnavInside ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 25px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.topnavInside li {
+  position: relative; /* dropdown absolute positioning anchor */
+  perspective: 600px; /* for 3D dropdown */
+}
+
+.topnavInside a {
+  display: block;
+  color: white;
+  padding: 14px 18px;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background-color 0.3s ease, transform 0.3s ease-in-out;
+  transform-style: preserve-3d;
+  cursor: pointer;
+}
+
+.topnavInside a:hover {
+  background-color: #0056b3;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.topnavInside a.active {
+  background-color: #003f7f;
+  color: white;
+}
+
+/* DROPDOWN MENU */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 38px; /* just below parent menu */
+  left: 0;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+  overflow: hidden;
+  transform: rotateX(-20deg) translateY(-6px);
+  transform-origin: top center;
+  opacity: 0;
+  transition: transform 0.35s ease, opacity 0.35s ease;
+  pointer-events: none; /* prevent interaction when hidden */
+  z-index: 11000; /* above navbar and content */
+  list-style: none;
+  padding: 0;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+  transform: rotateX(0deg) translateY(0);
+  opacity: 1;
+  pointer-events: auto; /* enable interaction */
+}
+
+.dropdown-content li {
+  margin: 0;
+  padding: 0;
+}
+
+.dropdown-content li a {
+  display: block;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: #333;
+  text-decoration: none;
+  transition: background-color 0.2s ease, transform 0.3s ease;
+  transform-style: preserve-3d;
+}
+
+.dropdown-content li a:hover {
+  background-color: #ddd;
+  transform: translateZ(5px);
+}
+
+/* MAIN CONTENT STYLES */
+.content {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 40px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  opacity: 0;
+  animation: fadeInContent 1s forwards;
+  position: relative;
+  z-index: 1; /* lower than navbar */
+}
+
+@keyframes fadeInContent {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.content h1 {
+  font-size: 36px;
+  color: #333;
+  margin-bottom: 20px;
+  font-weight: 600;
+  transition: transform 0.3s ease-in-out;
+}
+
+.content h1:hover {
+  transform: translateY(-5px);
+}
+
+.content p {
+  font-size: 18px;
+  color: #777;
+  margin-bottom: 40px;
+}
+
+/* BUTTON GROUP */
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.button-group button,
+.button-group a {
+  padding: 15px 25px;
+  font-size: 18px;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s ease, transform 0.3s ease-in-out;
+  text-decoration: none;
+  display: inline-block;
+  width: 200px;
+  text-align: center;
+}
+
+.button-group button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+}
+
+.button-group a {
+  background-color: #6c757d;
+  color: white;
+}
+
+.button-group button:hover {
+  background-color: #0056b3;
+  transform: translateY(-5px);
+}
+
+.button-group a:hover {
+  background-color: #545b62;
+  transform: translateY(-5px);
+}
+
+/* Watermark for index.html */
+body::before {
+  content: "";
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 400px;
+  height: 400px;
+  background: url('ucmainccslogo.png') no-repeat center center;
+  background-size: contain;
+  opacity: 0.1;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* MOBILE RESPONSIVE STYLES */
+@media (max-width: 768px) {
+  .topnav {
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .topnavInside ul {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .topnavInside a {
+    padding: 12px;
+  }
+
+  .content {
+    width: 90%;
+    padding: 30px;
+  }
+
+  .button-group {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .button-group button,
+  .button-group a {
+    width: 100%;
+    padding: 12px;
+  }
+}
+    </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
-<div class="topnav">
-  <div id="title">
-    <img src="uclogo.png" alt="uclogo" id="uc">
-    <span>College of Computer Studies Sit-in Monitoring System</span>
+  <!-- NAVBAR -->
+  <div class="topnav">
+    <div id="title">
+      <img src="uclogo.png" alt="uclogo" id="uc">
+      <span>College of Computer Studies Sit-in Monitoring System</span>
+    </div>
+    <div class="topnavInside">
+      <ul>
+        <li><a class="active" href="#">Home</a></li>
+        <li class="dropdown">
+          <a href="#">Community &#9662;</a>
+          <ul class="dropdown-content">
+            <li><a href="events.html">Events</a></li>
+            <li><a href="clubs.html">Clubs</a></li>
+            <li><a href="forum.html">Forum</a></li>
+          </ul>
+        </li>
+        <li><a href="#">About</a></li>
+        <li><a href="login.html">Login</a></li>
+        <li><a href="register.html">Register</a></li>
+      </ul>
+    </div>
   </div>
-  <div class="topnavInside">
-    <ul>
-      <li><a class="active" href="#">Home</a></li>
-      <li class="dropdown">
-        <a href="#">Community &#9662;</a>
-        <ul class="dropdown-content">
-          <li><a href="events.html">Events</a></li>
-          <li><a href="clubs.html">Clubs</a></li>
-          <li><a href="forum.html">Forum</a></li>
-        </ul>
-      </li>
-      <li><a href="#">About</a></li>
-      <li><a href="login.html">Login</a></li>
-      <li><a href="register.html">Register</a></li>
-    </ul>
-  </div>
-</div>
 
-<!-- MAIN CONTENT -->
-<div class="content">
-  <h1>Welcome to CCS Sit-in Monitoring System</h1>
-  <p>Dashboard and resources will soon appear here.</p>
-</div>
+  <!-- MAIN CONTENT -->
+  <div class="content">
+    <h1>Welcome to CCS Sit-in Monitoring System</h1>
+    <p>Dashboard and resources will soon appear here.</p>
+  </div>
 
 </body>
 </html>

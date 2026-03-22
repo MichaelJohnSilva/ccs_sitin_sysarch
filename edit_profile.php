@@ -72,186 +72,272 @@ $conn->close();
     <meta charset="UTF-8">
     <title>Edit Profile</title>
     <link rel="stylesheet" href="styles.css">
+<style>
+/* ===== GLOBAL ===== */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2f7, #e3e9f1);
+    opacity: 0;
+    animation: fadeIn 0.8s ease forwards;
+}
 
-    <style>
-    /* ===== DASHBOARD NAVBAR COPY ===== */
-    body { font-family: Arial, sans-serif; background:#f4f4f4; margin:0; padding:0; }
-    .navbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: #a0a0a0;
-        padding: 10px 20px;
-        color: white;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
-    .navbar .logo { font-weight:bold; font-size:20px; }
-    .navbar ul {
-        list-style:none;
-        display:flex;
-        margin:0;
-        padding:0;
-    }
-    .navbar ul li {
-        margin-left:20px;
-        position:relative;
-    }
-    .navbar ul li a {
-        text-decoration:none;
-        color:white;
-        font-weight:500;
-        padding:8px 12px;
-        transition:0.3s;
-    }
-    .navbar ul li a:hover {
-        background: rgba(255,255,255,0.2);
-        border-radius:6px;
-    }
-    .dropdown-content {
-        display:none;
-        position:absolute;
-        top:40px;
-        right:0;
-        background:#fff;
-        min-width:180px;
-        box-shadow:0 4px 8px rgba(0,0,0,0.2);
-        border-radius:6px;
-        overflow:hidden;
-        z-index:100;
-    }
-    .dropdown-content p {
-        padding:10px;
-        margin:0;
-        font-size:14px;
-        color:#333;
-    }
-    .dropdown:hover .dropdown-content { display:block; }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
-    /* ===== EDIT PROFILE FORM ===== */
-    .edit-container{
-        max-width:600px;
-        margin:40px auto;
-        background:#fff;
-        padding:30px;
-        border-radius:12px;
-        box-shadow:0 8px 20px rgba(0,0,0,0.1);
-    }
-    .edit-container h2{
-        text-align:center;
-        margin-bottom:20px;
-    }
-    .edit-container label{
-        display:block;
-        font-weight:bold;
-        margin-top:12px;
-        color:#333;
-    }
-    .edit-container input{
-        width:100%;
-        padding:10px;
-        margin-top:5px;
-        border:1px solid #ccc;
-        border-radius:6px;
-    }
-    .edit-container input:focus{
-        border-color:#007bff;
-        outline:none;
-    }
-    .edit-container button{
-        margin-top:20px;
-        width:48%;
-        padding:12px;
-        background:#007bff;
-        border:none;
-        color:white;
-        font-size:16px;
-        border-radius:8px;
-        cursor:pointer;
-        transition:0.3s;
-    }
-    .edit-container button:hover{
-        background:#0056b3;
-    }
-    .edit-container .cancel-btn{
-        background:#6c757d;
-    }
-    .edit-container .cancel-btn:hover{
-        background:#5a6268;
-    }
-    .profile-preview{
-        margin-top:10px;
-        width:100px;
-        border-radius:50%;
-    }
-    .btn-group{
-        display:flex;
-        justify-content:space-between;
-        gap:10px;
+/* ===== NAVBAR ===== */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #1f1f1f, #3a3a3a);
+    padding: 12px 28px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    transition: all 0.4s ease;
+}
+
+.navbar:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+.navbar .logo {
+    color: white;
+    font-weight: bold;
+    font-size: 24px;
+    transition: transform 0.3s;
+}
+
+.navbar .logo:hover {
+    transform: scale(1.05);
+}
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar ul li a {
+    text-decoration: none;
+    color: white;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.navbar ul li a:hover {
+    background: #007bff;
+    transform: translateY(-2px) scale(1.02);
+}
+
+/* ===== DROPDOWN / NOTIFICATIONS ===== */
+.dropdown {
+    position: relative;
+    perspective: 800px; /* Enable 3D */
+    z-index: 9999;
+}
+
+.dropdown > a {
+    display: inline-block;
+    transition: transform 0.35s ease, color 0.35s ease;
+    transform-style: preserve-3d;
+}
+
+.dropdown:hover > a {
+    transform: rotateX(0deg) translateZ(8px) scale(1.05);
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 38px;
+    right: 0;
+    background: #fff;
+    min-width: 180px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    border-radius: 10px;
+    overflow: hidden;
+    z-index: 10000;
+    transform: rotateX(-20deg) translateY(-6px);
+    transform-origin: top center;
+    transition: transform 0.35s ease, opacity 0.35s ease;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+    transform: rotateX(0deg) translateY(0) translateZ(12px);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.dropdown-content p {
+    padding: 10px;
+    margin: 0;
+    font-size: 14px;
+    color: #333;
+    transition: background 0.3s ease, transform 0.3s ease;
+    cursor: default;
+}
+
+.dropdown-content p:hover {
+    background: #f1f1f1;
+    transform: translateZ(8px);
+}
+
+/* ===== EDIT PROFILE CARD ===== */
+.edit-container {
+    max-width: 800px;
+    margin: 30px auto;
+    background: linear-gradient(135deg, #ffffff, #eef4ff);
+    padding: 30px 25px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    transition: all 0.4s ease;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.7s forwards;
+}
+
+@keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.edit-container:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 35px rgba(0,0,0,0.15);
+}
+
+/* ===== FORM GRID ===== */
+form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px 25px;
+}
+
+form label {
+    display: block;
+    font-weight: 600;
+    margin-top: 8px;
+    color: #333;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: labelUp 0.6s forwards;
+}
+
+@keyframes labelUp {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+form input[type="text"],
+form input[type="email"],
+form input[type="file"] {
+    width: 100%;
+    padding: 12px;
+    margin-top: 6px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    transition: all 0.4s ease;
+}
+
+form input:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 10px rgba(0,123,255,0.4);
+    transform: translateY(-2px);
+}
+
+/* ID Number Full Width */
+form input[disabled] {
+    grid-column: 1 / -1;
+    background: #f0f0f0;
+}
+
+/* Profile Photo Full Width */
+form input[type="file"] {
+    grid-column: 1 / -1;
+}
+
+/* Buttons Full Width on Bottom */
+.btn-group {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.btn-group button {
+    flex: 1;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+    color: #fff;
+    transition: all 0.35s ease;
+}
+
+.btn-group button[type="submit"] {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+}
+
+.btn-group button[type="submit"]:hover {
+    background: linear-gradient(135deg, #0056b3, #003f7f);
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 8px 20px rgba(0,123,255,0.4);
+}
+
+.btn-group .cancel-btn {
+    background: #6c757d;
+}
+
+.btn-group .cancel-btn:hover {
+    background: #5a6268;
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+}
+
+/* Profile Preview */
+.profile-preview {
+    grid-column: 1 / -1;
+    margin: 15px auto;
+    display: block;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #007bff;
+    transition: all 0.4s ease;
+}
+
+.profile-preview:hover {
+    transform: scale(1.12) rotate(2deg);
+    box-shadow: 0 12px 30px rgba(0,123,255,0.45);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    form {
+        display: block;
     }
 
-    /* EDIT PROFILE FORM */
-    .edit-container{
-        max-width:600px;
-        margin:40px auto;
-        background:#fff;
-        padding:30px;
-        border-radius:12px;
-        box-shadow:0 8px 20px rgba(0,0,0,0.1);
-        font-family: Arial, sans-serif;
+    .btn-group {
+        flex-direction: column;
     }
-    .edit-container h2{
-        text-align:center;
-        margin-bottom:20px;
+
+    .btn-group button {
+        width: 100%;
     }
-    .edit-container label{
-        display:block;
-        font-weight:bold;
-        margin-top:12px;
-        color:#333;
-    }
-    .edit-container input{
-        width:100%;
-        padding:10px;
-        margin-top:5px;
-        border:1px solid #ccc;
-        border-radius:6px;
-    }
-    .edit-container input:focus{
-        border-color:#007bff;
-        outline:none;
-    }
-    .edit-container button{
-        margin-top:20px;
-        width:48%;
-        padding:12px;
-        background:#007bff;
-        border:none;
-        color:white;
-        font-size:16px;
-        border-radius:8px;
-        cursor:pointer;
-        transition:0.3s;
-    }
-    .edit-container button:hover{
-        background:#0056b3;
-    }
-    .edit-container .cancel-btn{
-        background:#6c757d;
-    }
-    .edit-container .cancel-btn:hover{
-        background:#5a6268;
-    }
-    .profile-preview{
-        margin-top:10px;
-        width:100px;
-        border-radius:50%;
-    }
-    .btn-group{
-        display:flex;
-        justify-content:space-between;
-        gap:10px;
-    }
-    </style>
+}
+</style>
 </head>
 <body>
 

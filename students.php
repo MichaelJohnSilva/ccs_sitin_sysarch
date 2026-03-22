@@ -43,254 +43,365 @@ if(isset($_GET['keyword'])){
 
 <style>
 
-body{
-font-family:Arial;
-background:#f5f5f5;
-margin:0;
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
 }
 
-/* NAVBAR */
-.topnav{
-display:flex;
-justify-content:space-between;
-align-items:center;
-background:#a0a0a0;
-padding:10px 20px;
-color:white;
+body {
+    background: #f4f6f9;
+    color: #333;
 }
 
-.topnav ul{
-list-style:none;
-display:flex;
-gap:15px;
+/* ========================= */
+/* NAVBAR (MATCH DASHBOARD) */
+/* ========================= */
+.topnav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #4a4a4a, #2e2e2e);
+    padding: 12px 25px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
 }
 
-.topnav ul li a{
-color:white;
-text-decoration:none;
+#title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
 }
 
-
-
-/* If you have a specific class for logout button */
-.logout-btn {
-  color: white;
-  padding: 5px 10px;
-  border-radius: 4px;
-  text-decoration: none;
-  transition: background-color 0.3s ease;
+#uc {
+    height: 45px;
 }
 
-.logout-btn:hover {
-  color: #fff;
-  cursor: pointer;
+.topnavInside ul {
+    list-style: none;
+    display: flex;
+    gap: 15px;
 }
 
-.topnav a[href="logout.php"] {
-  color: white;
-  padding: 5px 10px;
-  border-radius: 4px;
-  text-decoration: none;
-  transition: background-color 0.3s ease;
+.topnavInside ul li a {
+    color: white;
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: 0.3s;
+    font-size: 14px;
 }
 
-.topnav a[href="logout.php"]:hover {
-  background-color: #23211e;
-  cursor: pointer;
+.topnavInside ul li a:hover {
+    background: rgba(255,255,255,0.2);
 }
 
-/* PAGE */
-.container{
-width:90%;
-margin:auto;
-margin-top:20px;
+.topnavInside ul li a.active {
+    background: #0d6efd;
 }
 
-h1{
-text-align:center;
+/* ========================= */
+/* PAGE CONTAINER            */
+/* ========================= */
+.container {
+    width: 90%;
+    margin: 40px auto 20px;
+    text-align: center;
 }
 
-/* BUTTONS */
-
-.btn{
-padding:8px 12px;
-border:none;
-border-radius:4px;
-cursor:pointer;
-color:white;
+.container h1 {
+    margin-bottom: 15px;
 }
 
-.btn-add{
-background:#0d6efd;
+/* ========================= */
+/* BUTTONS                   */
+/* ========================= */
+.btn {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: white;
+    transition: 0.2s;
 }
 
-.btn-reset{
-background:#dc3545;
+.btn-add {
+    background: #0d6efd;
 }
 
-/* TABLE */
-
-table{
-width:100%;
-border-collapse:collapse;
-margin-top:20px;
-background:white;
+.btn-add:hover {
+    background: #0b5ed7;
+    transform: translateY(-2px);
 }
 
-table th, table td{
-padding:10px;
-border-bottom:1px solid #ddd;
-text-align:center;
+.btn-reset {
+    background: #dc3545;
 }
 
-table th{
-background:#f2f2f2;
+.btn-reset:hover {
+    background: #bb2d3b;
+    transform: translateY(-2px);
 }
 
-/* ACTION BUTTONS */
-
-.edit{
-background:#0d6efd;
+/* ========================= */
+/* TABLE                     */
+/* ========================= */
+table {
+    width: 90%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
 }
 
-.delete{
-background:#dc3545;
+table th {
+    background: linear-gradient(135deg, #0d6efd, #0a58ca);
+    color: white;
+    padding: 12px;
+    font-size: 14px;
 }
 
-.search-box{
-float:right;
-margin-top:-35px;
+table td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+    font-size: 14px;
 }
 
-/* MODAL BACKGROUND */
+table tr:hover {
+    background: #f8fbff;
+}
+
+/* ========================= */
+/* ACTION BUTTONS            */
+/* ========================= */
+.edit {
+    background: #0d6efd;
+}
+
+.delete {
+    background: #dc3545;
+}
+
+.edit:hover {
+    background: #0b5ed7;
+}
+
+.delete:hover {
+    background: #bb2d3b;
+}
+
+/* ========================= */
+/* SEARCH MODAL              */
+/* ========================= */
 .modal {
     display: none;
     position: fixed;
     z-index: 9999;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
-    align-items: center;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
     justify-content: center;
+    align-items: center;
 }
 
 .modal.show {
     display: flex;
 }
 
-/* MODAL BOX */
 .modal-content {
-    background: #fff;
+    background: white;
     width: 70%;
     max-width: 900px;
-    border-radius: 10px;
-    padding: 25px 35px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    animation: fadeIn 0.3s ease;
 }
 
-/* HEADER */
+/* ========================= */
+/* MODAL HEADER              */
+/* ========================= */
 .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
 }
+
 .modal-header h2 {
+    flex: 1;
+    text-align: center;
     margin: 0;
-    font-weight: 600;
 }
 
 .close {
-    font-size: 22px;
+    font-size: 24px;
     cursor: pointer;
 }
 
-/* FORM */
-.form-container {
+.close:hover {
+    color: red;
+}
+
+/* ========================= */
+/* SEARCH FORM               */
+/* ========================= */
+.modal-content form {
+    display: flex;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.modal-content input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.modal-content input:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 5px rgba(13,110,253,0.3);
+    outline: none;
+}
+
+/* ========================= */
+/* SIT-IN MODAL              */
+/* ========================= */
+#sitInModal .modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#sitInModal form {
+    width: 60%;
+    max-width: 500px;
     display: flex;
     flex-direction: column;
 }
-.form-container label {
-    font-weight: bold;
+
+/* LABEL */
+#sitInModal label {
     margin-top: 12px;
-    margin-bottom: 5px;
+    font-weight: 600;
 }
 
-.form-container input,
-.form-container select {
-    width: 100%;
-    padding: 12px;
+/* INPUTS */
+#sitInModal input,
+#sitInModal select {
+    margin-top: 5px;
+    padding: 10px;
     border-radius: 6px;
     border: 1px solid #ccc;
-    font-size: 14px;
+}
+
+/* FOCUS */
+#sitInModal input:focus,
+#sitInModal select:focus {
+    border-color: #198754;
+    box-shadow: 0 0 5px rgba(25,135,84,0.3);
+    outline: none;
 }
 
 /* BUTTON */
 .submit-btn {
     margin-top: 20px;
-    width: 90px;
-    padding: 6px;
+    padding: 10px;
+    background: #198754;
+    color: white;
+    border: none;
+    border-radius: 6px;
     cursor: pointer;
 }
-.modal-header h3 {
-  margin: 0;
-  font-weight: bold;
-  font-size: 1.25rem;
+
+.submit-btn:hover {
+    background: #157347;
 }
 
-.modal-header .close {
-  cursor: pointer;
-  font-size: 22px;
-  font-weight: bold;
-  user-select: none;
+/* ========================= */
+/* SEARCH BUTTON IN MODAL    */
+/* ========================= */
+.search-btn {
+    padding: 6px 12px;
+    background: #0d6efd;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
-/* Form labels */
-.modal-body label {
-  display: block;
-  margin-top: 12px;
-  font-weight: 600;
-  font-size: 0.9rem;
+.search-btn:hover {
+    background: #0b5ed7;
 }
 
-/* Inputs and select */
-.modal-body input[type="text"],
-.modal-body select {
-  width: 100%;
-  padding: 8px 10px;
-  margin-top: 6px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 0.9rem;
-  box-sizing: border-box;
+/* ========================= */
+/* ANIMATION                 */
+/* ========================= */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
-/* Submit button */
-.modal-submit-btn {
-  margin-top: 20px;
-  padding: 10px 16px;
-  background-color: #0d6efd; /* Bootstrap blue */
-  border: none;
-  color: white;
-  font-weight: 600;
-  font-size: 1rem;
-  border-radius: 6px;
-  cursor: pointer;
-  width: 100%;
-  transition: background-color 0.3s ease;
+/* ========================= */
+/* SCROLLBAR                 */
+/* ========================= */
+::-webkit-scrollbar {
+    width: 8px;
 }
 
-.modal-submit-btn:hover:not(:disabled) {
-  background-color: #084cd6;
+::-webkit-scrollbar-thumb {
+    background: #bbb;
+    border-radius: 10px;
 }
 
-.modal-submit-btn:disabled {
-  background-color: #6c757d;
-  cursor: not-allowed;
+::-webkit-scrollbar-thumb:hover {
+    background: #888;
 }
 
+/* ========================= */
+/* SIT-IN FORM HEADER FIX    */
+/* ========================= */
+#sitInModal .modal-header {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center; /* centers the title */
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+/* Title stays centered */
+#sitInModal .modal-header h2 {
+    margin: 0;
+    text-align: center;
+}
+
+/* X (close) stays on the right */
+#sitInModal .modal-header .close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 24px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+#sitInModal .modal-header .close:hover {
+    color: red;
+}
 </style>
 </head>
 
@@ -318,65 +429,45 @@ margin-top:-35px;
 
 
 <div class="container">
+  <h1>Students Information</h1>
+    <button class="btn btn-add">Add Students</button>
+    <button class="btn btn-reset">Reset All Session</button>
+</div>
+  <table>
+    <tr>
+      <th>ID Number</th>
+      <th>Name</th>
+      <th>Year Level</th>
+      <th>Course</th>
+      <th>Remaining Session</th>
+      <th>Actions</th>
+  </tr>
 
-<h1>Students Information</h1>
-
-<button class="btn btn-add">Add Students</button>
-<button class="btn btn-reset">Reset All Session</button>
-
+  <?php 
+  $data = $searchResults ? $searchResults : $students;
+  while($row = $data->fetch_assoc()){ 
+  ?>
+  <tr>
+    <td><?php echo $row['id_number']; ?></td>
+    <td>
+    <?php
+    echo $row['first_name']." ".
+    $row['middle_name']." ".
+    $row['last_name'];
+    ?>
+   </td>
+    <td><?php echo $row['year_level'] ?? "-"; ?></td>
+    <td><?php echo $row['course']; ?></td>
+    <td><?php echo $row['sessions_remaining'] ?? 30; ?></td>
+    <td>
+    <button class="btn edit">Edit</button>
+    <button class="btn delete">Delete</button>
+    </td>
+  </tr>
+  <?php } ?>
+  </table>
 </div>
 
-<table>
-
-<tr>
-<th>ID Number</th>
-<th>Name</th>
-<th>Year Level</th>
-<th>Course</th>
-<th>Remaining Session</th>
-<th>Actions</th>
-</tr>
-
-<?php 
-$data = $searchResults ? $searchResults : $students;
-while($row = $data->fetch_assoc()){ 
-?>
-
-<tr>
-
-<td><?php echo $row['id_number']; ?></td>
-
-<td>
-<?php
-echo $row['first_name']." ".
-$row['middle_name']." ".
-$row['last_name'];
-?>
-</td>
-
-<td><?php echo $row['year_level'] ?? "-"; ?></td>
-
-<td><?php echo $row['course']; ?></td>
-
-<td><?php echo $row['sessions_remaining'] ?? 30; ?></td>
-
-<td>
-
-<button class="btn edit">Edit</button>
-
-<button class="btn delete">Delete</button>
-
-</td>
-
-</tr>
-
-<?php } ?>
-
-</table>
-
-</div>
-
-<!-- SEARCH MODAL -->
 <!-- SEARCH MODAL -->
 <div id="searchModal" class="modal">
   <div class="modal-content">

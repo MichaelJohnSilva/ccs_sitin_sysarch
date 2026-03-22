@@ -37,145 +37,363 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>View Sit-in Records</title>
         <link rel="stylesheet" href="styles.css">
-        <style>
-            /* Your styles for navbar and content go here */
-            body {
-                font-family: Arial;
-                background: #f5f5f5;
-                margin: 0;
-            }
+<style>
 
-            /* NAVBAR */
-            .topnav {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                background: #a0a0a0;
-                padding: 10px 20px;
-                color: white;
-            }
+/* ========================= */
+/* RESET & BASE              */
+/* ========================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
-            .topnav ul {
-                list-style: none;
-                display: flex;
-                gap: 15px;
-            }
+body {
+    background: #f4f6f9;
+    color: #333;
+    overflow-x: hidden;
+    transition: background 0.3s ease;
+}
 
-            .topnav ul li a {
-                color: white;
-                text-decoration: none;
-                padding: 5px 10px;
-                border-radius: 4px;
-            }
+/* ========================= */
+/* LOADING TRANSITION        */
+/* ========================= */
+#loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(255,255,255,0.95);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    transition: opacity 0.6s ease;
+}
 
-            .topnav ul li a.active {
-                background: #1f1f1f;
-            }
+#loading-overlay.hide {
+    opacity: 0;
+    pointer-events: none;
+}
 
-            .topnav ul li a:hover {
-                background: #575757;
-                cursor: pointer;
-            }
+.spinner {
+    border: 6px solid rgba(0,0,0,0.1);
+    border-top: 6px solid #0d6efd;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+}
 
-            .container {
-                width: 95%;
-                margin: auto;
-                margin-top: 30px;
-            }
+@keyframes spin {
+    0% { transform: rotate(0deg);}
+    100% { transform: rotate(360deg);}
+}
 
-            h2 {
-                text-align: center;
-            }
+/* ========================= */
+/* NAVBAR                    */
+/* ========================= */
+.topnav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #4a4a4a, #2e2e2e);
+    padding: 12px 25px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
 
-            /* TABLE */
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                background: white;
-            }
+#title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+}
 
-            table th, table td {
-                padding: 10px;
-                border-bottom: 1px solid #ddd;
-                text-align: center;
-            }
+#uc {
+    height: 45px;
+}
 
-            table th {
-                background: #f2f2f2;
-            }
+.topnavInside ul {
+    display: flex;
+    list-style: none;
+    gap: 15px;
+}
 
-                        /* MODAL BACKGROUND */
-            .modal {
-            display: none;
-            position: fixed;
-            z-index: 999;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            }
+.topnavInside ul li a {
+    color: white;
+    text-decoration: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
 
-            /* MODAL BOX */
-            .modal-content {
-            background: #f9f9f9;
-            width: 80%;
-            max-width: 1000px;
-            margin: 60px auto;
-            padding: 25px 40px;
-            border-radius: 10px;
-            }
+.topnavInside ul li a:hover {
+    background: rgba(255,255,255,0.2);
+    transform: translateY(-2px);
+}
 
-            /* HEADER */
-            .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            }
+.topnavInside ul li a.active {
+    background: #0d6efd;
+    box-shadow: 0 3px 10px rgba(13,110,253,0.4);
+}
 
-            .modal-header h2 {
-            margin: 0;
-            }
+/* ========================= */
+/* PAGE CONTAINER            */
+/* ========================= */
+.container {
+    width: 95%;
+    margin: 40px auto;
+    transition: all 0.3s ease;
+}
 
-            .close {
-            font-size: 22px;
-            cursor: pointer;
-            }
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #0d6efd;
+    letter-spacing: 1px;
+}
 
-            /* FORM LAYOUT */
-            .form-container {
-            display: flex;
-            flex-direction: column;
-            }
+/* ========================= */
+/* TABLE STYLING             */
+/* ========================= */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+}
 
-            /* LABELS */
-            .form-container label {
-            margin-top: 15px;
-            margin-bottom: 5px;
-            font-weight: bold;
-            font-size: 16px;
-            }
+table th {
+    background: linear-gradient(135deg, #0d6efd, #0a58ca);
+    color: white;
+    padding: 14px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
 
-            /* INPUTS */
-            .form-container input,
-            .form-container select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 14px;
-            }
+table td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
 
-            /* BUTTON */
-            .submit-btn {
-            margin-top: 20px;
-            width: 100px;
-            padding: 6px;
-            font-size: 14px;
-            cursor: pointer;
-            }
-        </style>
+table tr:hover {
+    background: #f1f5ff;
+    transform: scale(1.01);
+}
+
+/* STATUS COLORS */
+.status-active {
+    color: #198754;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.status-ended {
+    color: #dc3545;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+/* ========================= */
+/* MODALS                    */
+/* ========================= */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.modal.show {
+    display: flex;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    background: white;
+    width: 70%;
+    max-width: 900px;
+    border-radius: 14px;
+    padding: 30px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    animation: fadeScale 0.4s ease forwards;
+}
+
+/* MODAL HEADER */
+.modal-header {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.modal-header h2 {
+    text-align: center;
+    color: #0d6efd;
+}
+
+.modal-header .close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 26px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.modal-header .close:hover {
+    color: red;
+    transform: scale(1.2);
+}
+
+/* SEARCH FORM */
+.modal-content form {
+    display: flex;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.modal-content input {
+    flex: 1;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    transition: all 0.2s ease;
+}
+
+.modal-content input:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 6px rgba(13,110,253,0.3);
+    outline: none;
+}
+
+.search-btn {
+    padding: 10px 16px;
+    background: #0d6efd;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.search-btn:hover {
+    background: #0b5ed7;
+    transform: translateY(-2px);
+}
+
+/* SIT-IN FORM */
+#sitInModal .modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#sitInModal form {
+    width: 60%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+}
+
+#sitInModal label {
+    margin-top: 12px;
+    font-weight: 600;
+    color: #495057;
+}
+
+#sitInModal input,
+#sitInModal select {
+    margin-top: 5px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    transition: all 0.3s ease;
+}
+
+#sitInModal input:focus,
+#sitInModal select:focus {
+    border-color: #198754;
+    box-shadow: 0 0 5px rgba(25,135,84,0.3);
+    outline: none;
+}
+
+.submit-btn {
+    margin-top: 20px;
+    padding: 12px;
+    background: linear-gradient(135deg, #198754, #146c43);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.submit-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    background: linear-gradient(135deg, #146c43, #0f5132);
+}
+
+/* ========================= */
+/* ANIMATION                 */
+/* ========================= */
+@keyframes fadeScale {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #bbb;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #888;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 90%;
+    }
+    table th, table td {
+        font-size: 12px;
+        padding: 10px;
+    }
+    .topnavInside ul {
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+}
+</style>
     </head>
 
     <body>
@@ -201,65 +419,80 @@
         </div>
     </div>
 
-    <!-- SEARCH MODAL -->
     <div id="searchModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-        <h3>Search Student</h3>
-        <span class="close" onclick="closeSearch()">×</span>
-        </div>
-        <div class="modal-body">
-        <form method="POST" id="searchForm">
-            <input type="text" name="keyword" placeholder="Search..." required value="<?php echo isset($_POST['keyword']) ? htmlspecialchars($_POST['keyword']) : '' ?>">
-            <button type="submit" name="search" class="search-btn">Search</button>
-        </form>
+  <div class="modal-content">
 
-        <?php if ($searchResults !== null): ?>
-            <hr>
-            <h4>Search Results:</h4>
-            <?php if ($searchResults->num_rows > 0): ?>
-            <table>
-                <thead>
-                <tr>
-                    <th>ID Number</th>
-                    <th>First Name</th>
-                    <th>Middle Name</th>
-                    <th>Last Name</th>
-                    <th>Course</th>
-                    <th>Remaining Session</th>
-                    <th>Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php while ($row = $searchResults->fetch_assoc()): ?>
-                <tr>
-                    <td><?php echo htmlspecialchars($row['id_number']); ?></td>
-                    <td><?php echo htmlspecialchars($row['first_name']); ?></td>
-                    <td><?php echo htmlspecialchars($row['middle_name']); ?></td>
-                    <td><?php echo htmlspecialchars($row['last_name']); ?></td>
-                    <td><?php echo htmlspecialchars($row['course']); ?></td>
-                    <td><?php echo htmlspecialchars($row['sessions_remaining'] ?? 30); ?></td>
+    <!-- HEADER -->
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <h2>Search Student</h2>
+      <span class="close" onclick="closeSearch()">×</span>
+    </div>
 
-                    <td>
-                        <button class="search-btn"
-                            onclick="selectStudent(
-                                '<?php echo $row['id_number']; ?>',
-                                '<?php echo $row['first_name'].' '.$row['middle_name'].' '.$row['last_name']; ?>'
-                            )">
-                            Sit In
-                        </button>
-                    </td>
-                </tr>
-                <?php endwhile; ?>
-                </tbody>
-            </table>
-            <?php else: ?>
-            <p>No students found matching your search.</p>
-            <?php endif; ?>
-        <?php endif; ?>
-        </div>
-    </div>
-    </div>
+    <hr>
+
+    <!-- SEARCH BAR -->
+    <form method="POST" style="display:flex; gap:10px; margin:15px 0;">
+      <input type="text" name="keyword" placeholder="Search..."
+        value="<?php echo isset($_POST['keyword']) ? htmlspecialchars($_POST['keyword']) : ''; ?>"
+        style="flex:1; padding:12px; border:1px solid #ccc; border-radius:6px;">
+
+      <button type="submit" name="search" class="search-btn">Search</button>
+    </form>
+
+    <hr>
+
+    <!-- RESULTS -->
+    <?php if ($searchResults !== null): ?>
+
+      <h3>Search Results:</h3>
+
+      <?php if ($searchResults->num_rows > 0): ?>
+        <table>
+          <thead>
+            <tr>
+              <th>ID Number</th>
+              <th>First Name</th>
+              <th>Middle Name</th>
+              <th>Last Name</th>
+              <th>Course</th>
+              <th>Remaining Session</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <?php while ($row = $searchResults->fetch_assoc()): ?>
+              <tr>
+                <td><?php echo htmlspecialchars($row['id_number']); ?></td>
+                <td><?php echo htmlspecialchars($row['first_name']); ?></td>
+                <td><?php echo htmlspecialchars($row['middle_name']); ?></td>
+                <td><?php echo htmlspecialchars($row['last_name']); ?></td>
+                <td><?php echo htmlspecialchars($row['course']); ?></td>
+                <td><?php echo htmlspecialchars($row['sessions_remaining'] ?? 30); ?></td>
+
+                <td>
+                  <button class="search-btn"
+                    onclick="selectStudent(
+                      '<?php echo $row['id_number']; ?>',
+                      '<?php echo htmlspecialchars($row['first_name'].' '.$row['middle_name'].' '.$row['last_name']); ?>',
+                      '<?php echo $row['sessions_remaining'] ?? 30; ?>'
+                    )">
+                    Sit In
+                  </button>
+                </td>
+              </tr>
+            <?php endwhile; ?>
+          </tbody>
+        </table>
+
+      <?php else: ?>
+        <p>No students found.</p>
+      <?php endif; ?>
+
+    <?php endif; ?>
+
+  </div>
+</div>
 
     <!-- SIT-IN RECORDS -->
     <div class="container">
@@ -335,44 +568,47 @@
   </div>
 </div>
     </body>
-
-    <script>
+<script>
     function openSearch() {
-    document.getElementById("searchModal").style.display = "block";
+        document.getElementById("searchModal").classList.add("show");
     }
 
     function closeSearch() {
-    document.getElementById("searchModal").style.display = "none";
+        document.getElementById("searchModal").classList.remove("show");
     }
-
     function openSitInForm() {
-    document.getElementById("sitInModal").style.display = "block";
+        document.getElementById("sitInModal").classList.add("show");
     }
 
     function closeSitInForm() {
-    document.getElementById("sitInModal").style.display = "none";
+        document.getElementById("sitInModal").classList.remove("show");
+    }
+
+    function selectStudent(id, name, session){
+        closeSearch();
+        openSitInForm();
+
+        document.querySelector('#sitInModal input[name="id_number"]').value = id;
+        document.querySelector('#sitInModal input[name="student_name"]').value = name;
+        document.querySelector('#sitInModal input[name="remaining_session"]').value = session;
     }
 
     window.onclick = function(event) {
-    let searchModal = document.getElementById("searchModal");
-    let sitInModal = document.getElementById("sitInModal");
+        const searchModal = document.getElementById("searchModal");
+        const sitInModal = document.getElementById("sitInModal");
 
-    if (event.target == searchModal) {
-        searchModal.style.display = "none";
-    }
+        if (event.target === searchModal) {
+            closeSearch();
+        }
 
-    if (event.target == sitInModal) {
-        sitInModal.style.display = "none";
-    }
-    }
-
-    function selectStudent(id, name){
-    document.getElementById("searchModal").style.display = "none";
-    document.getElementById("sitInModal").style.display = "block";
-
-    document.querySelector('input[name="id_number"]').value = id;
-    document.querySelector('input[name="student_name"]').value = name;
-    }
-    </script>
+        if (event.target === sitInModal) {
+            closeSitInForm();
+        }
+    };
+        
+    <?php if ($searchResults !== null): ?>
+    document.getElementById("searchModal").classList.add("show");
+    <?php endif; ?>
+</script>
 
     </html> 

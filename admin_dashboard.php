@@ -90,204 +90,416 @@ while($row = $chart_query->fetch_assoc()){
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-/* RESET */
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial;
+/* ========================= */
+/* RESET & BASE              */
+/* ========================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* NAVBAR */
-.topnav{
-display:flex;
-justify-content:space-between;
-align-items:center;
-background:#a0a0a0;
-padding:10px 20px;
+body {
+    background: #f4f6f9;
+    color: #333;
 }
 
-#title{
-display:flex;
-align-items:center;
-gap:10px;
-color:white;
-font-size:18px;
-font-weight:bold;
+/* ========================= */
+/* LOADING TRANSITION ======= */
+/* ========================= */
+#loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    transition: opacity 0.5s ease;
 }
 
-#uc{
-height:45px;
+#loading-overlay.hide {
+    opacity: 0;
+    pointer-events: none;
 }
 
-.topnavInside ul{
-display:flex;
-list-style:none;
-gap:18px;
+/* Spinner styles */
+.spinner {
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    border-top: 5px solid #007bff;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
 }
 
-.topnavInside ul li a{
-text-decoration:none;
-color:white;
-font-size:14px;
-padding:6px 10px;
-border-radius:4px;
-transition:.3s;
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
-.topnavInside ul li a:hover{
-background:#575757;
+/* ========================= */
+/* NAVBAR                    */
+/* ========================= */
+.topnav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #4a4a4a, #2e2e2e);
+    padding: 12px 25px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
 }
 
-.topnavInside ul li a.active{
-background:#1f1f1f;
+#title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
 }
 
-/* DASHBOARD */
-.dashboard-container{
-max-width:1200px;
-margin:40px auto;
-display:flex;
-gap:20px;
+#uc {
+    height: 45px;
 }
 
-.dashboard-card{
-flex:1;
-background:white;
-border-radius:8px;
-box-shadow:0 4px 10px #a0a0a0;
-padding:20px;
+.topnavInside ul {
+    display: flex;
+    list-style: none;
+    gap: 15px;
 }
 
-.dashboard-title{
-background:#a0a0a0;
-color:white;
-padding:10px;
-border-radius:5px;
-margin-bottom:15px;
-font-weight:bold;
+.topnavInside ul li a {
+    text-decoration: none;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: 0.3s;
+    font-size: 14px;
+    position: relative;
 }
 
-/* MODAL */
-.modal{
-display:none;
-position:fixed;
-z-index:999;
-left:0;
-top:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.5);
+.topnavInside ul li a:hover {
+    background: rgba(255,255,255,0.2);
 }
 
-.modal-content{
-background:white;
-width:90%;
-max-width:900px;   /* 👈 makes it wider */
-margin:80px auto;
-border-radius:8px;
-box-shadow:0 4px 15px rgba(0,0,0,0.3);
-overflow-x:auto;   /* 👈 enables scroll if needed */
-
-border-radius:8px;
-box-shadow:0 4px 15px rgba(0,0,0,0.3);
-overflow:hidden;
+.topnavInside ul li a.active {
+    background: #0d6efd;
 }
 
-.modal-header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:15px;
-border-bottom:1px solid #ddd;
+/* ========================= */
+/* DASHBOARD LAYOUT          */
+/* ========================= */
+.dashboard-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    display: flex;
+    gap: 20px;
 }
 
-.close{
-cursor:pointer;
-font-size:20px;
-font-weight:bold;
+/* ========================= */
+/* CARDS                     */
+/* ========================= */
+.dashboard-card {
+    flex: 1;
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    transition: 0.3s;
+    border: 1px solid #eee;
 }
 
-.modal-body{
-padding:20px;
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
 }
 
-.modal-body label{
-display:block;
-margin-top:10px;
-font-weight:bold;
+.dashboard-title {
+    background: linear-gradient(135deg, #6c757d, #495057);
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-weight: bold;
 }
 
-.modal-body input{
-width:100%;
-padding:8px;
-border:1px solid #ccc;
-border-radius:4px;
-margin-top:5px;
+/* ========================= */
+/* MODALS                    */
+/* ========================= */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
 }
 
-/* BUTTONS */
-.search-btn{
-padding:8px 15px;
-background:#0d6efd;
-border:none;
-color:white;
-border-radius:5px;
-cursor:pointer;
-margin-left:10px;
+.modal.show {
+    display: flex;
 }
 
-.delete-btn{
-margin-top:5px;
-padding:5px 12px;
-background:#dc3545;
-color:white;
-border:none;
-border-radius:4px;
-cursor:pointer;
-font-size:12px;
+.modal-content {
+    background: white;
+    width: 90%;
+    max-width: 900px;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    animation: fadeIn 0.3s ease;
 }
 
-.announcement-form{
-display:flex;
-flex-direction:column;
-gap:10px;
+/* ========================= */
+/* MODAL HEADER              */
+/* ========================= */
+.modal-header-clean {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.announcement-form textarea{
-width:100%;
-height:90px;
-padding:10px;
-border:1px solid #ccc;
-border-radius:6px;
-resize:none;
+.modal-header-clean h2,
+.modal-header-clean h3 {
+    flex: 1;
+    text-align: center;
 }
 
-.announcement-btn{
-align-self:flex-end;
-padding:8px 18px;
-background:#a0a0a0;
-color:white;
-border:none;
-border-radius:6px;
-cursor:pointer;
-font-weight:bold;
+.close {
+    font-size: 24px;
+    cursor: pointer;
+    transition: 0.2s;
 }
 
-table{
-width:100%;
-margin-top:20px;
-border-collapse:collapse;
+.close:hover {
+    color: red;
 }
 
-table th, table td{
-border:1px solid #ddd;
-padding:8px;
-font-size:14px;
+/* ========================= */
+/* SEARCH                    */
+/* ========================= */
+.search-bar {
+    display: flex;
+    gap: 12px;
+    margin: 15px 0;
 }
 
-table th{
-background:#f0f0f0;
+.search-bar input {
+    flex: 1;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    transition: 0.2s;
+}
+
+.search-bar input:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 5px rgba(13,110,253,0.3);
+    outline: none;
+}
+
+.btn-search {
+    background: #0d6efd;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    transition: 0.2s;
+}
+
+.btn-search:hover {
+    background: #0b5ed7;
+    transform: translateY(-2px);
+}
+
+/* ========================= */
+/* SIT-IN FORM               */
+/* ========================= */
+#sitInModal form {
+    width: 100%;
+    max-width: 450px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+#sitInModal label {
+    margin-top: 10px;
+    font-weight: 600;
+}
+
+#sitInModal input,
+#sitInModal select {
+    margin-top: 5px;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    transition: 0.2s;
+}
+
+#sitInModal input:focus,
+#sitInModal select:focus {
+    border-color: #198754;
+    box-shadow: 0 0 5px rgba(25,135,84,0.3);
+    outline: none;
+}
+
+#sitInModal button {
+    margin-top: 20px;
+    padding: 10px;
+    background: #198754;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    transition: 0.2s;
+}
+
+#sitInModal button:hover {
+    background: #157347;
+}
+
+/* ========================= */
+/* TABLE                     */
+/* ========================= */
+table {
+    width: 100%;
+    margin-top: 15px;
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+table th {
+    background: #0d6efd;
+    color: white;
+    padding: 10px;
+}
+
+table td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+table tr {
+    transition: 0.2s;
+}
+
+table tr:hover {
+    background: #f8fbff;
+}
+
+/* ========================= */
+/* ANNOUNCEMENT              */
+/* ========================= */
+.announcement-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.announcement-form textarea {
+    height: 100px;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    resize: none;
+    transition: 0.2s;
+}
+
+.announcement-form textarea:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 5px rgba(13,110,253,0.3);
+    outline: none;
+}
+
+.announcement-btn {
+    align-self: flex-end;
+    padding: 10px 18px;
+    background: linear-gradient(135deg, #0d6efd, #0a58ca);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    transition: 0.2s;
+    margin-bottom: 20px;
+}
+
+.announcement-btn:hover {
+    transform: translateY(-2px);
+}
+
+.announcement-item {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 10px;
+    border-left: 5px solid #0d6efd;
+    transition: 0.2s;
+}
+
+.announcement-item:hover {
+    transform: scale(1.01);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.announcement-item p:first-child {
+    font-size: 13px;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.announcement-item p:nth-child(2) {
+    font-size: 15px;
+    margin-bottom: 10px;
+}
+
+.delete-btn {
+    padding: 6px 12px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 12px;
+    transition: 0.2s;
+}
+
+.delete-btn:hover {
+    background: #bb2d3b;
+}
+
+/* ========================= */
+/* ANIMATION                 */
+/* ========================= */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ========================= */
+/* SCROLLBAR                 */
+/* ========================= */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #bbb;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #888;
 }
 
 </style>
@@ -319,109 +531,121 @@ background:#f0f0f0;
 
 <!-- SEARCH MODAL -->
 <div id="searchModal" class="modal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3>Search Student</h3>
+  <div class="modal-content search-style">
+
+    <!-- HEADER -->
+    <div class="modal-header-clean">
+      <h2>Search Student</h2>
       <span class="close" onclick="closeSearch()">×</span>
     </div>
-    <div class="modal-body">
-      <form method="POST" id="searchForm">
-        <input type="text" name="keyword" placeholder="Search..." required value="<?php echo isset($_POST['keyword']) ? htmlspecialchars($_POST['keyword']) : '' ?>">
-        <button type="submit" name="search" class="search-btn">Search</button>
-      </form>
 
-      <?php if ($searchResults !== null): ?>
-        <hr>
-        <h4>Search Results:</h4>
-        <?php if ($searchResults->num_rows > 0): ?>
-          <table>
-            <thead>
+    <hr>
+
+    <!-- SEARCH BAR -->
+    <form method="POST" class="search-bar">
+      <input type="text" name="keyword" placeholder="Search..."
+        value="<?php echo isset($_POST['keyword']) ? htmlspecialchars($_POST['keyword']) : ''; ?>"
+        required>
+
+      <button type="submit" name="search" class="btn-search">Search</button>
+    </form>
+
+    <hr>
+
+    <!-- RESULTS -->
+    <?php if ($searchResults !== null): ?>
+      <h3>Search Results:</h3>
+
+      <?php if ($searchResults->num_rows > 0): ?>
+        <table>
+          <thead>
+            <tr>
+              <th>ID Number</th>
+              <th>First Name</th>
+              <th>Middle Name</th>
+              <th>Last Name</th>
+              <th>Course</th>
+              <th>Remaining Session</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <?php while ($row = $searchResults->fetch_assoc()): ?>
               <tr>
-                <th>ID Number</th>
-                <th>First Name</th>
-                <th>Middle Name</th>
-                <th>Last Name</th>
-                <th>Course</th>
-                <th>Remaining Session</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php while ($row = $searchResults->fetch_assoc()): ?>
-               <tr>
-                  <td><?php echo htmlspecialchars($row['id_number']); ?></td>
-                  <td><?php echo htmlspecialchars($row['first_name']); ?></td>
-                  <td><?php echo htmlspecialchars($row['middle_name']); ?></td>
-                  <td><?php echo htmlspecialchars($row['last_name']); ?></td>
-                  <td><?php echo htmlspecialchars($row['course']); ?></td>
-                  <td><?php echo htmlspecialchars($row['sessions_remaining'] ?? 30); ?></td>
+                <td><?= htmlspecialchars($row['id_number']); ?></td>
+                <td><?= htmlspecialchars($row['first_name']); ?></td>
+                <td><?= htmlspecialchars($row['middle_name']); ?></td>
+                <td><?= htmlspecialchars($row['last_name']); ?></td>
+                <td><?= htmlspecialchars($row['course']); ?></td>
+                <td><?= htmlspecialchars($row['sessions_remaining'] ?? 30); ?></td>
 
-                  <td>
-                      <button class="search-btn"
-                          onclick="selectStudent(
-                              '<?php echo $row['id_number']; ?>',
-                              '<?php echo $row['first_name'].' '.$row['middle_name'].' '.$row['last_name']; ?>'
-                          )">
-                          Sit In
-                      </button>
-                  </td>
+                <td>
+                  <button type="button" class="btn-search"
+                    onclick="selectStudent(
+                      '<?= $row['id_number']; ?>',
+                      '<?= $row['first_name'].' '.$row['middle_name'].' '.$row['last_name']; ?>',
+                      '<?= $row['sessions_remaining'] ?? 30; ?>'
+                    )">
+                    Sit In
+                  </button>
+                </td>
               </tr>
-              <?php endwhile; ?>
-            </tbody>
-          </table>
-        <?php else: ?>
-          <p>No students found matching your search.</p>
-        <?php endif; ?>
+            <?php endwhile; ?>
+          </tbody>
+        </table>
+      <?php else: ?>
+        <p>No students found.</p>
       <?php endif; ?>
-    </div>
+    <?php endif; ?>
+
   </div>
 </div>
 <!-- SIT-IN MODAL -->
 <div id="sitInModal" class="modal">
+  <div class="modal-content search-style">
 
-<div class="modal-content">
+    <!-- HEADER -->
+    <div class="modal-header-clean">
+      <h2>Sit-In Form</h2>
+      <span class="close" onclick="closeSitIn()">×</span>
+    </div>
 
-<div class="modal-header">
-<h3>Sit In Form</h3>
-<span class="close" onclick="closeSitIn()">×</span>
+    <hr>
+
+    <!-- FORM -->
+    <form method="POST" action="sit_in.php" class="search-bar" style="flex-direction: column;">
+
+      <label>ID Number</label>
+      <input type="text" name="id_number" required placeholder="Enter student ID">
+
+      <label>Student Name</label>
+      <input type="text" name="student_name" readonly>
+
+      <label>Purpose</label>
+      <select name="purpose" required>
+        <option value="">Select Language</option>
+        <option value="C">C</option>
+        <option value="C#">C#</option>
+        <option value="Java">Java</option>
+        <option value="PHP">PHP</option>
+        <option value="ASP.Net">ASP.Net</option>
+      </select>
+
+      <label>Lab</label>
+      <input type="text" name="lab" required>
+
+      <label>Remaining Session</label>
+      <input type="text" name="remaining_session">
+
+      <button type="submit" class="btn-search" style="margin-top:15px;">
+        Sit In
+      </button>
+
+    </form>
+
+  </div>
 </div>
-
-<div class="modal-body">
-
-<form method="POST" action="sit_in.php">
-
-<label>ID Number</label>
-<input type="text" name="id_number" required placeholder="Enter student ID" />
-
-<label>Student Name</label>
-<input type="text" name="student_name" readonly>
-
-<label>Purpose</label>
-<select name="purpose" required>
-    <option value="">Select Language</option>
-    <option value="C">C</option>
-    <option value="C#">C#</option>
-    <option value="Java">Java</option>
-    <option value="PHP">PHP</option>
-    <option value="ASP.Net">ASP.Net</option>
-</select>
-
-<label>Lab</label>
-<input type="text" name="lab" required>
-
-<label>Remaining Session</label>
-<input type="text" name="remaining_session">
-
-<button type="submit" onclick="this.disabled=true;this.form.submit();">
-Sit In
-</button>
-
-</form>
-
-</div>
-</div>
-</div>
-
 
 <!-- DASHBOARD -->
 <div class="dashboard-container">
@@ -486,84 +710,76 @@ Delete
 </div>
 
 <script>
-
-/* SEARCH MODAL */
+/* OPEN / CLOSE SEARCH */
 function openSearch(){
-document.getElementById("searchModal").style.display="block";
+    document.getElementById("searchModal").classList.add("show");
 }
 
 function closeSearch(){
-document.getElementById("searchModal").style.display="none";
+    document.getElementById("searchModal").classList.remove("show");
 }
 
-/* SIT-IN MODAL */
+/* OPEN / CLOSE SIT-IN */
 function openSitIn(){
-document.getElementById("sitInModal").style.display="block";
+    document.getElementById("sitInModal").classList.add("show");
 }
 
 function closeSitIn(){
-document.getElementById("sitInModal").style.display="none";
+    document.getElementById("sitInModal").classList.remove("show");
 }
 
-/* CLOSE MODAL OUTSIDE CLICK */
+/* SELECT STUDENT */
+function selectStudent(id, name, session){
+    closeSearch();
+    openSitIn();
+
+    document.querySelector('input[name="id_number"]').value = id;
+    document.querySelector('input[name="student_name"]').value = name;
+    document.querySelector('input[name="remaining_session"]').value = session;
+}
+
+/* CLOSE MODAL ON OUTSIDE CLICK */
 window.onclick = function(event){
+    const searchModal = document.getElementById("searchModal");
+    const sitInModal = document.getElementById("sitInModal");
 
-let searchModal = document.getElementById("searchModal");
-let sitInModal = document.getElementById("sitInModal");
+    if(event.target === searchModal){
+        closeSearch();
+    }
 
-if(event.target == searchModal){
-searchModal.style.display="none";
+    if(event.target === sitInModal){
+        closeSitIn();
+    }
 }
 
-if(event.target == sitInModal){
-sitInModal.style.display="none";
-}
-
-}
+/* AUTO OPEN SEARCH AFTER SUBMIT */
+<?php if ($searchResults !== null): ?>
+openSearch();
+<?php endif; ?>
 
 /* DELETE ANNOUNCEMENT */
 function deleteAnnouncement(id){
-
-if(confirm("Delete this announcement?")){
-window.location = "admin_dashboard.php?delete=" + id;
-}
-
+    if(confirm("Delete this announcement?")){
+        window.location = "admin_dashboard.php?delete=" + id;
+    }
 }
 
 /* CHART */
 const ctx = document.getElementById('chart');
 
-// PHP injects the chart data dynamically
 const labels = <?php echo json_encode($chart_labels); ?>;
 const data = <?php echo json_encode($chart_data); ?>;
 
 new Chart(ctx,{
-type:'pie',
-data:{
-labels: labels,
-datasets:[{
-data: data,
-backgroundColor:['#ff6384','#36a2eb','#ffce56','#4bc0c0','#9966ff']
-}]
-}
+    type:'pie',
+    data:{
+        labels: labels,
+        datasets:[{
+            data: data,
+            backgroundColor:['#ff6384','#36a2eb','#ffce56','#4bc0c0','#9966ff']
+        }]
+    }
 });
-
-<?php if ($searchResults !== null): ?>
-document.getElementById("searchModal").style.display = "block";
-<?php endif; ?>
-
-function selectStudent(id, name){
-    // Close search modal
-    document.getElementById("searchModal").style.display = "none";
-
-    // Open sit-in modal
-    document.getElementById("sitInModal").style.display = "block";
-
-    // Autofill data
-    document.querySelector('input[name="id_number"]').value = id;
-    document.querySelector('input[name="student_name"]').value = name;
-}
 </script>
-
 </body>
 </html>
