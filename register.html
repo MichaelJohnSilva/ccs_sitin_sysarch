@@ -23,115 +23,16 @@ body {
   to { opacity: 1; transform: translateY(0);}
 }
 
-/* ===== NAVBAR ===== */
-.topnav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: linear-gradient(135deg, #1f1f1f, #3a3a3a);
-  padding: 12px 28px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-  position: relative;
-  z-index: 1000;
-  perspective: 700px; /* 3D effect */
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-
-#title {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: white;
-  font-weight: bold;
-  font-size: 20px;
-}
-
-#uc {
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-}
-
-.topnavInside ul {
-  list-style: none;
-  display: flex;
-  gap: 25px;
-  margin: 0;
-  padding: 0;
-}
-
-.topnavInside li {
-  position: relative;
-}
-
-.topnavInside a {
-  display: block;
-  color: white;
-  text-decoration: none;
-  padding: 12px 16px;
-  font-weight: 500;
-  border-radius: 6px;
-  transition: all 0.3s ease;
-}
-
-.topnavInside a:hover,
-.topnavInside a.active {
-  background: #007bff;
-  transform: translateY(-2px) scale(1.05);
-}
-
-/* ===== DROPDOWN MENU ===== */
-.dropdown-content {
-  display: none;
-  position: absolute;
-  top: 50px;
-  left: 0;
-  min-width: 180px;
-  background: rgba(255,255,255,0.95);
-  border-radius: 10px;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.25);
-  opacity: 0;
-  transform: rotateX(-20deg) translateY(-10px);
-  transform-origin: top center;
-  transition: all 0.35s ease;
-  pointer-events: none;
-  list-style: none;
-  padding: 0;
-  z-index: 1100;
-}
-
-.dropdown:hover .dropdown-content {
-  display: block;
-  opacity: 1;
-  transform: rotateX(0deg) translateY(0);
-  pointer-events: auto;
-}
-
-.dropdown-content li a {
-  display: block;
-  padding: 12px 18px;
-  color: #333;
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
-
-.dropdown-content li a:hover {
-  background: #f1f1f1;
-  transform: translateX(4px);
-}
-
 /* ===== MAIN CONTENT ===== */
 .content {
   max-width: 720px;
   margin: 60px auto;
   padding: 50px 35px;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   border-radius: 20px;
   box-shadow: 0 20px 40px rgba(0,0,0,0.1);
   text-align: center;
-  position: relative;
-  z-index: 1;
   animation: fadeUp 0.8s forwards;
 }
 
@@ -161,48 +62,64 @@ body {
   margin-bottom: 20px;
 }
 
+/* FORM GROUP */
 .form-group {
   position: relative;
   display: flex;
   flex-direction: column-reverse;
+  margin-bottom: 20px;
 }
 
+/* INPUT & SELECT */
 .form-group input,
 .form-group select {
-  padding: 14px 12px 14px 12px;
+  padding: 18px 12px 6px 12px; /* top padding makes room for label */
   border-radius: 8px;
   border: 1px solid #ccc;
   width: 100%;
   font-size: 15px;
   transition: all 0.3s ease;
-  background: transparent;
+  background: #fff;
+  box-sizing: border-box;
 }
 
+/* Remove default arrow in select */
+.form-group select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+/* LABEL */
 .form-group label {
   position: absolute;
-  top: 14px;
   left: 12px;
+  top: 18px; /* aligns with input text */
   font-size: 15px;
   color: #777;
   font-weight: 500;
   pointer-events: none;
+  background: white;
+  padding: 0 4px;
   transition: all 0.3s ease;
 }
 
+/* FLOATING LABEL ON FOCUS OR VALUE */
 .form-group input:focus + label,
 .form-group input:not(:placeholder-shown) + label,
 .form-group select:focus + label,
 .form-group select:not([value=""]) + label {
-  top: -10px;
+  top: -8px;
   font-size: 12px;
   color: #007bff;
-  background: white;
+  background: #fff;
   padding: 0 4px;
 }
 
-/* Full width form group */
-.form-group.full-width {
-  grid-column: 1 / -1;
+/* Placeholder option hidden after selection (select only) */
+.form-group select option[hidden] {
+  display: none;
 }
 
 /* BUTTON GROUP */
@@ -224,7 +141,6 @@ body {
   border: none;
   color: #fff;
   cursor: pointer;
-  text-decoration: none;
   text-align: center;
   transition: all 0.35s ease;
 }
@@ -248,7 +164,7 @@ body {
   transform: translateY(-3px) scale(1.02);
 }
 
-/* ===== FOOTER ===== */
+/* FOOTER */
 .footer {
   text-align: center;
   padding: 20px 0;
@@ -258,32 +174,14 @@ body {
   border-top: 1px solid rgba(255,255,255,0.1);
 }
 
-/* ===== WATERMARK ===== */
-body::before {
-  content: "";
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  width: 400px;
-  height: 400px;
-  background: url('ucmainccslogo.png') no-repeat center center;
-  background-size: contain;
-  opacity: 0.08;
-  pointer-events: none;
-  transform: translate(-50%, -50%);
-  z-index: 0;
-}
-
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
   .register-form {
     display: block;
   }
-
   .button-group {
     flex-direction: column;
   }
-
   .button-group button,
   .button-group a {
     width: 100%;
@@ -317,87 +215,86 @@ body::before {
     </div>
   </div>
 
-  <!-- MAIN CONTENT -->
-  <div class="content">
-    <h1>Create an Account</h1>
-    <p>Sign up to access the CCS Sit-in Monitoring System.</p>
+ <!-- MAIN CONTENT -->
+<div class="content">
+  <h1>Create an Account</h1>
+  <p>Sign up to access the CCS Sit-in Monitoring System.</p>
 
-    <!-- REGISTER FORM -->
-    <form class="register-form" action="register.php" method="POST">
-      <div class="form-group">
-        <label for="idNumber">ID Number</label>
-        <input type="text" id="idNumber" name="idNumber" required>
-      </div>
+  <!-- REGISTER FORM -->
+  <form class="register-form" action="register.php" method="POST">
+    <div class="form-group">
+      <input type="text" id="idNumber" name="idNumber" placeholder=" " required>
+      <label for="idNumber">ID Number</label>
+    </div>
 
-      <div class="form-group">
-        <label for="lastName">Last Name</label>
-        <input type="text" id="lastName" name="lastName" required>
-      </div>
+    <div class="form-group">
+      <input type="text" id="lastName" name="lastName" placeholder=" " required>
+      <label for="lastName">Last Name</label>
+    </div>
 
-      <div class="form-group">
-        <label for="firstName">First Name</label>
-        <input type="text" id="firstName" name="firstName" required>
-      </div>
+    <div class="form-group">
+      <input type="text" id="firstName" name="firstName" placeholder=" " required>
+      <label for="firstName">First Name</label>
+    </div>
 
-      <div class="form-group">
-        <label for="middleName">Middle Name</label>
-        <input type="text" id="middleName" name="middleName">
-      </div>
+    <div class="form-group">
+      <input type="text" id="middleName" name="middleName" placeholder=" ">
+      <label for="middleName">Middle Name</label>
+    </div>
 
-      <div class="form-group">
-        <label for="course">Course</label>
-        <select id="course" name="course" required>
-          <option value="">-- Select Course --</option>
-          <option value="BS Accountancy">BS Accountancy</option>
-          <option value="BS Business Administration">BS Business Administration</option>
-          <option value="BS Computer Science">BS Computer Science</option>
-          <option value="BS Information Technology">BS Information Technology</option>
-          <option value="BS Computer Engineering">BS Computer Engineering</option>
-          <option value="BS Criminology">BS Criminology</option>
-          <option value="BS Civil Engineering">BS Civil Engineering</option>
-          <option value="BS Electrical Engineering">BS Electrical Engineering</option>
-          <option value="BS Mechanical Engineering">BS Mechanical Engineering</option>
-          <option value="BS Industrial Engineering">BS Industrial Engineering</option>
-          <option value="BS Commerce">BS Commerce</option>
-          <option value="BS Hotel & Restaurant Management">BS Hotel & Restaurant Management</option>
-          <option value="BS Tourism Management">BS Tourism Management</option>
-          <option value="BS Elementary Education">BS Elementary Education</option>
-          <option value="BS Secondary Education">BS Secondary Education</option>
-          <option value="BS Customs Administration">BS Customs Administration</option>
-          <option value="BS Industrial Psychology">BS Industrial Psychology</option>
-          <option value="BS Real Estate Management">BS Real Estate Management</option>
-          <option value="BS Office Administration">BS Office Administration</option>
-        </select>
-      </div>
+    <div class="form-group">
+      <select id="course" name="course" required>
+        <option value="" disabled selected hidden>-- Select Course --</option>
+        <option value="BS Accountancy">BS Accountancy</option>
+        <option value="BS Business Administration">BS Business Administration</option>
+        <option value="BS Computer Science">BS Computer Science</option>
+        <option value="BS Information Technology">BS Information Technology</option>
+        <option value="BS Computer Engineering">BS Computer Engineering</option>
+        <option value="BS Criminology">BS Criminology</option>
+        <option value="BS Civil Engineering">BS Civil Engineering</option>
+        <option value="BS Electrical Engineering">BS Electrical Engineering</option>
+        <option value="BS Mechanical Engineering">BS Mechanical Engineering</option>
+        <option value="BS Industrial Engineering">BS Industrial Engineering</option>
+        <option value="BS Commerce">BS Commerce</option>
+        <option value="BS Hotel & Restaurant Management">BS Hotel & Restaurant Management</option>
+        <option value="BS Tourism Management">BS Tourism Management</option>
+        <option value="BS Elementary Education">BS Elementary Education</option>
+        <option value="BS Secondary Education">BS Secondary Education</option>
+        <option value="BS Customs Administration">BS Customs Administration</option>
+        <option value="BS Industrial Psychology">BS Industrial Psychology</option>
+        <option value="BS Real Estate Management">BS Real Estate Management</option>
+        <option value="BS Office Administration">BS Office Administration</option>
+      </select>
+      <label for="course">Course</label>
+    </div>
 
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" required>
-      </div>
+    <div class="form-group">
+      <input type="password" id="password" name="password" placeholder=" " required>
+      <label for="password">Password</label>
+    </div>
 
-      <div class="form-group">
-        <label for="repeatPassword">Repeat Password</label>
-        <input type="password" id="repeatPassword" name="repeatPassword" required>
-      </div>
+    <div class="form-group">
+      <input type="password" id="repeatPassword" name="repeatPassword" placeholder=" " required>
+      <label for="repeatPassword">Repeat Password</label>
+    </div>
 
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" required>
-      </div>
+    <div class="form-group">
+      <input type="email" id="email" name="email" placeholder=" " required>
+      <label for="email">Email</label>
+    </div>
 
-      <div class="form-group">
-        <label for="address">Address</label>
-        <input type="text" id="address" name="address">
-      </div>
+    <div class="form-group">
+      <input type="text" id="address" name="address" placeholder=" ">
+      <label for="address">Address</label>
+    </div>
 
-      <!-- BUTTONS -->
-      <div class="button-group">
-        <a href="index.html" class="back-btn">Back</a>
-        <button type="submit">Register</button>
-      </div>
-    </form>
-  </div>
-
+    <!-- BUTTONS -->
+    <div class="button-group">
+      <a href="index.html" class="back-btn">Back</a>
+      <button type="submit">Register</button>
+    </div>
+  </form>
+</div>
   <!-- FOOTER -->
   <div class="footer">
     <p>&copy; 2026 College of Computer Studies. All rights reserved.</p>
