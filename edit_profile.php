@@ -72,12 +72,16 @@ $conn->close();
     <meta charset="UTF-8">
     <title>Edit Profile</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ===== GLOBAL ===== */
 body {
     margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #eef2f7, #e3e9f1);
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    position: relative;
+}
     opacity: 0;
     animation: fadeIn 0.8s ease forwards;
 }
@@ -92,14 +96,14 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: linear-gradient(135deg, #1f1f1f, #3a3a3a);
-    padding: 12px 28px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    padding: 15px 40px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     transition: all 0.4s ease;
 }
 
 .navbar:hover {
-    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    box-shadow: 0 6px 25px rgba(0,0,0,0.4);
 }
 
 .navbar .logo {
@@ -116,7 +120,7 @@ body {
 .navbar ul {
     list-style: none;
     display: flex;
-    gap: 10px;
+    gap: 5px;
     margin: 0;
     padding: 0;
 }
@@ -125,80 +129,99 @@ body {
     text-decoration: none;
     color: white;
     font-weight: 500;
-    padding: 8px 14px;
-    border-radius: 6px;
+    padding: 10px 18px;
+    border-radius: 8px;
     transition: all 0.3s ease;
+    position: relative;
+}
+
+.navbar ul li a::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 3px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+    border-radius: 2px;
 }
 
 .navbar ul li a:hover {
-    background: #007bff;
-    transform: translateY(-2px) scale(1.02);
+    background: rgba(255,255,255,0.1);
+    transform: translateY(-2px);
+}
+
+.navbar ul li a:hover::before {
+    width: 80%;
 }
 
 /* ===== DROPDOWN / NOTIFICATIONS ===== */
 .dropdown {
     position: relative;
-    perspective: 800px; /* Enable 3D */
     z-index: 9999;
 }
 
 .dropdown > a {
     display: inline-block;
-    transition: transform 0.35s ease, color 0.35s ease;
-    transform-style: preserve-3d;
+    transition: all 0.3s ease;
 }
 
 .dropdown:hover > a {
-    transform: rotateX(0deg) translateZ(8px) scale(1.05);
+    transform: translateY(-2px);
 }
 
 .dropdown-content {
     display: none;
     position: absolute;
-    top: 38px;
+    top: 50px;
     right: 0;
-    background: #fff;
-    min-width: 180px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-    border-radius: 10px;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    min-width: 200px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+    border-radius: 12px;
     overflow: hidden;
     z-index: 10000;
-    transform: rotateX(-20deg) translateY(-6px);
-    transform-origin: top center;
-    transition: transform 0.35s ease, opacity 0.35s ease;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
     opacity: 0;
     pointer-events: none;
 }
 
 .dropdown:hover .dropdown-content {
     display: block;
-    transform: rotateX(0deg) translateY(0) translateZ(12px);
+    transform: translateY(0);
     opacity: 1;
     pointer-events: auto;
 }
 
 .dropdown-content p {
-    padding: 10px;
+    padding: 12px 16px;
     margin: 0;
     font-size: 14px;
-    color: #333;
-    transition: background 0.3s ease, transform 0.3s ease;
+    color: rgba(255,255,255,0.9);
+    transition: all 0.3s ease;
     cursor: default;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.dropdown-content p:last-child {
+    border-bottom: none;
 }
 
 .dropdown-content p:hover {
-    background: #f1f1f1;
-    transform: translateZ(8px);
+    background: rgba(255,255,255,0.1);
 }
 
 /* ===== EDIT PROFILE CARD ===== */
 .edit-container {
     max-width: 800px;
     margin: 30px auto;
-    background: linear-gradient(135deg, #ffffff, #eef4ff);
-    padding: 30px 25px;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     transition: all 0.4s ease;
     opacity: 0;
     transform: translateY(20px);
@@ -211,7 +234,7 @@ body {
 
 .edit-container:hover {
     transform: translateY(-6px);
-    box-shadow: 0 18px 35px rgba(0,0,0,0.15);
+    box-shadow: 0 25px 70px rgba(0,0,0,0.4);
 }
 
 /* ===== FORM GRID ===== */
@@ -241,15 +264,16 @@ form input[type="file"] {
     width: 100%;
     padding: 12px;
     margin-top: 6px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
     transition: all 0.4s ease;
+    font-family: 'Poppins', sans-serif;
 }
 
 form input:focus {
-    border-color: #007bff;
+    border-color: #667eea;
     outline: none;
-    box-shadow: 0 0 10px rgba(0,123,255,0.4);
+    box-shadow: 0 0 15px rgba(102, 126, 234, 0.4);
     transform: translateY(-2px);
 }
 
@@ -278,21 +302,22 @@ form input[type="file"] {
     padding: 14px;
     font-size: 16px;
     font-weight: 500;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
     border: none;
     color: #fff;
     transition: all 0.35s ease;
+    font-family: 'Poppins', sans-serif;
 }
 
 .btn-group button[type="submit"] {
-    background: linear-gradient(135deg, #007bff, #0056b3);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 .btn-group button[type="submit"]:hover {
-    background: linear-gradient(135deg, #0056b3, #003f7f);
-    transform: translateY(-3px) scale(1.03);
-    box-shadow: 0 8px 20px rgba(0,123,255,0.4);
+    background: linear-gradient(135deg, #5a6fd6 0%, #6a4190 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(102,126,234,0.5);
 }
 
 .btn-group .cancel-btn {
@@ -301,8 +326,8 @@ form input[type="file"] {
 
 .btn-group .cancel-btn:hover {
     background: #5a6268;
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
 }
 
 /* Profile Preview */

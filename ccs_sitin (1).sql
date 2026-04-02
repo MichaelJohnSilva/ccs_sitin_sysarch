@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 18, 2026 at 01:51 AM
+-- Generation Time: Mar 22, 2026 at 04:08 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -38,8 +38,7 @@ CREATE TABLE `announcements` (
 --
 
 INSERT INTO `announcements` (`id`, `message`, `created_at`) VALUES
-(3, 'Important Announcement We are excited to announce the launch of our new website! 🎉 Explore our latest products and services now!', '2026-03-17 00:58:15'),
-(12, 'TIDERT', '2026-03-17 14:33:57');
+(3, 'Important Announcement We are excited to announce the launch of our new website! 🎉 Explore our latest products and services now!', '2026-03-17 00:58:15');
 
 -- --------------------------------------------------------
 
@@ -63,17 +62,7 @@ CREATE TABLE `sitin_records` (
 --
 
 INSERT INTO `sitin_records` (`id`, `id_number`, `purpose`, `lab`, `remaining_sessions`, `time_in`, `time_out`, `status`) VALUES
-(6, '21539101', 'JAVA', '302', 30, '2026-03-17 03:25:25', NULL, 'Active'),
-(7, '21539102', 'C', '300', 30, '2026-03-17 03:29:12', NULL, 'Active'),
-(8, '21539103', 'C', '524', 30, '2026-03-17 14:32:40', NULL, 'Active'),
-(9, '21539103', 'C', '524', 30, '2026-03-17 14:32:58', NULL, 'Active'),
-(10, '21539103', 'Java', '302', 30, '2026-03-17 14:33:22', NULL, 'Active'),
-(11, '21539102', 'ASP.Net', '302', 30, '2026-03-18 00:32:13', NULL, 'Active'),
-(12, '21539102', 'C', '302', 30, '2026-03-18 00:33:10', NULL, 'Active'),
-(13, '21539102', 'C#', '302', 30, '2026-03-18 00:33:24', NULL, 'Active'),
-(14, '21539101', 'ASP.Net', '3005', 30, '2026-03-18 00:35:16', NULL, 'Active'),
-(15, '21539101', 'Java', '3005', 30, '2026-03-18 00:35:42', NULL, 'Active'),
-(16, '21539101', 'ASP.Net', '2005', 30, '2026-03-18 00:38:23', NULL, 'Active');
+(39, '0001', 'ASP.Net', '545', 30, '2026-03-22 03:04:24', '2026-03-22 03:05:29', 'Ended');
 
 -- --------------------------------------------------------
 
@@ -84,6 +73,7 @@ INSERT INTO `sitin_records` (`id`, `id_number`, `purpose`, `lab`, `remaining_ses
 CREATE TABLE `students` (
   `id` int(11) NOT NULL,
   `id_number` varchar(50) NOT NULL,
+  `year_level` varchar(10) DEFAULT NULL,
   `last_name` varchar(100) NOT NULL,
   `first_name` varchar(100) NOT NULL,
   `middle_name` varchar(100) NOT NULL,
@@ -102,12 +92,9 @@ CREATE TABLE `students` (
 -- Dumping data for table `students`
 --
 
-INSERT INTO `students` (`id`, `id_number`, `last_name`, `first_name`, `middle_name`, `course`, `email`, `password`, `address`, `created_at`, `status`, `role`, `photo`, `sessions_remaining`) VALUES
-(11, '21539101', 'Silva', 'Michael', 'Jackson', 'BS Elementary Education', 'michaeljohnsilva6@gmail.com', '$2y$10$h0K3VG.LFuvyS0/b8KIEquzJ5y.ZehkOM.4eBsl8P1Xp.Vwrl63m6', 'Cebu City', '2026-03-14 15:13:38', 'active', 'student', 'uploads/1773526779_Screenshot 2026-03-15 053918.png', 24),
-(22, '21539101', 'Silva', 'Michael', 'John', 'BS Elementary Education', 'michaeljohnsilva55@gmail.com', '$2y$10$twkODgrqmOjsCOew4CE7/ecLSGMuTm5yEeVHCwHW.xYKx5zwCMyhi', 'Cebu City', '2026-03-14 15:45:44', 'active', 'student', 'uploads/profile_22.png', 24),
-(27, '00000001', 'Admin', 'System', '', 'Administrator', 'admin@ccs.com', '$2y$10$8ltlTYfSn4BmyWVOOTfXUuQ8Smt5T.vx/sOnRWDq.7pTTDxR4PEGG', 'System', '2026-03-14 16:00:37', 'active', 'admin', NULL, 30),
-(28, '21539102', 'Woo', 'Michael John', 'Silva', 'BS Hotel & Restaurant Management', 'mjsilva@gmail.com', '$2y$10$604VTM75APNSCa89PKlrb.solH44xLa0NYYJPznPT5Za17nmh5G5W', 'Cebu City', '2026-03-17 03:28:22', '', 'student', NULL, 26),
-(29, '21539103', 'Silva', 'MIchael', 'Santillan', 'BS Information Technology', 'mjsilva1@gmail.com', '$2y$10$W/gbLXoxHGlE98J2S6hlYuboK1/f3m23WVgmNj3Oe5aDJRP2PnRmu', 'Cebu City', '2026-03-17 14:14:39', '', 'student', 'uploads/1773790666_RobloxScreenShot20251213_115128503.png', 27);
+INSERT INTO `students` (`id`, `id_number`, `year_level`, `last_name`, `first_name`, `middle_name`, `course`, `email`, `password`, `address`, `created_at`, `status`, `role`, `photo`, `sessions_remaining`) VALUES
+(27, '00000001', NULL, 'Admin', 'System', '', 'Administrator', 'admin@ccs.com', '$2y$10$8ltlTYfSn4BmyWVOOTfXUuQ8Smt5T.vx/sOnRWDq.7pTTDxR4PEGG', 'System', '2026-03-14 16:00:37', 'active', 'admin', NULL, 30),
+(33, '0001', '4', 'Silva', 'Michael John', 'Woo', 'BS Information Technology', 'michaeljohnsilva5@gmail.com', '$2y$10$ABuGbniBj8MOohkYe4hXHuNvkMI8ZSqssNFLKr6fx5HPScsNWWhRm', 'Zapatera Gym, 302 Sikatuna Street, Sitio Gupok, Zapatera', '2026-03-22 01:46:09', '', 'student', 'uploads/profile_33.png', 30);
 
 --
 -- Indexes for dumped tables
@@ -139,19 +126,19 @@ ALTER TABLE `students`
 -- AUTO_INCREMENT for table `announcements`
 --
 ALTER TABLE `announcements`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `sitin_records`
 --
 ALTER TABLE `sitin_records`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `students`
 --
 ALTER TABLE `students`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

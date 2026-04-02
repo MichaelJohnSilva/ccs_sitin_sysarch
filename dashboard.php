@@ -63,14 +63,15 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
 /* ===== GLOBAL ===== */
 body {
     margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #eef2f7, #e3e9f1);
-    opacity: 0;
-    animation: fadeIn 0.7s ease forwards;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    position: relative;
 }
 
 @keyframes fadeIn {
@@ -83,16 +84,16 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: linear-gradient(135deg, #1f1f1f, #3a3a3a);
-    padding: 12px 28px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    transition: 0.3s;
-    position: relative;
-    z-index: 10;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    padding: 15px 40px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 .navbar:hover {
-    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    box-shadow: 0 6px 25px rgba(0,0,0,0.4);
 }
 
 .navbar .left {
@@ -103,63 +104,78 @@ body {
 
 .navbar .right {
     display: flex;
-    gap: 10px;
+    gap: 5px;
 }
 
 .navbar a, .dropdown-btn {
     color: white;
-    padding: 8px 14px;
-    border-radius: 6px;
-    transition: all 0.25s ease;
+    padding: 10px 18px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
     text-decoration: none;
     background: transparent;
     border: none;
     cursor: pointer;
+    position: relative;
+}
+
+.navbar a::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 3px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+    border-radius: 2px;
 }
 
 .navbar a:hover, .dropdown-btn:hover {
-    background: #007bff;
+    background: rgba(255,255,255,0.1);
     transform: translateY(-2px);
+}
+
+.navbar a:hover::before {
+    width: 80%;
 }
 
 /* ===== NOTIFICATION DROPDOWN ===== */
 .dropdown {
     position: relative;
-    perspective: 800px; /* enables 3D depth */
-    z-index: 9999; /* ensure on top */
+    z-index: 9999;
 }
 
 .dropdown > a {
     display: inline-block;
-    transition: transform 0.35s ease, color 0.35s ease;
-    transform-style: preserve-3d;
+    transition: all 0.3s ease;
 }
 
 .dropdown:hover > a {
-    transform: rotateX(0deg) translateZ(8px) scale(1.05);
+    transform: translateY(-2px);
 }
 
 .dropdown-content {
     display: none;
     position: absolute;
-    top: 38px;
+    top: 50px;
     right: 0;
-    background: #fff;
-    min-width: 200px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    min-width: 220px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
     border-radius: 12px;
     overflow: hidden;
-    z-index: 10000; /* highest to be in front */
-    transform: rotateX(-20deg) translateY(-6px);
-    transform-origin: top center;
-    transition: transform 0.35s ease, opacity 0.35s ease;
+    z-index: 10000;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
     opacity: 0;
     pointer-events: none;
 }
 
 .dropdown:hover .dropdown-content {
     display: block;
-    transform: rotateX(0deg) translateY(0) translateZ(12px);
+    transform: translateY(0);
     opacity: 1;
     pointer-events: auto;
 }
@@ -168,14 +184,18 @@ body {
     padding: 12px 16px;
     margin: 0;
     font-size: 14px;
-    color: #333;
-    transition: background 0.3s ease, transform 0.3s ease;
+    color: rgba(255,255,255,0.9);
+    transition: all 0.3s ease;
     cursor: default;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.dropdown-content p:last-child {
+    border-bottom: none;
 }
 
 .dropdown-content p:hover {
-    background: #f0f8ff;
-    transform: translateZ(8px);
+    background: rgba(255,255,255,0.1);
 }
 
 /* ===== CONTENT GRID ===== */
@@ -199,19 +219,18 @@ body {
 
 /* ===== PROFILE CARD ===== */
 .profile-card {
-    background: linear-gradient(135deg, #ffffff, #eef4ff);
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 12px 25px rgba(0,0,0,0.08);
-    border-left: 5px solid #007bff;
+    background: white;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     position: sticky;
     top: 15px;
     transition: all 0.3s ease;
 }
 
 .profile-card:hover {
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 18px 35px rgba(0,0,0,0.15);
+    transform: translateY(-5px);
+    box-shadow: 0 25px 70px rgba(0,0,0,0.4);
 }
 
 .profile-card img {
@@ -267,47 +286,49 @@ body {
 
 /* ===== ANNOUNCEMENTS ===== */
 .announcement {
-    background: linear-gradient(135deg, #ffffff, #f8fbff);
-    padding: 16px;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    background: white;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     transition: all 0.3s ease;
-    max-height: 250px;
+    max-height: 300px;
     overflow-y: auto;
 }
 
 .announcement:hover {
-    transform: translateY(-3px) scale(1.01);
-    box-shadow: 0 18px 35px rgba(0,0,0,0.15);
+    transform: translateY(-5px);
+    box-shadow: 0 25px 70px rgba(0,0,0,0.4);
 }
 
 .announcement h3 {
-    border-left: 5px solid #007bff;
-    padding-left: 10px;
-    margin: 0 0 6px 0;
+    border-left: 4px solid #667eea;
+    padding-left: 12px;
+    margin: 0 0 15px 0;
+    color: #1a1a2e;
 }
 
 .announcement p {
-    margin: 3px 0;
+    margin: 5px 0;
     font-size: 14px;
+    color: #555;
 }
 
 /* Scrollbar */
 .announcement::-webkit-scrollbar {
-    width: 5px;
+    width: 6px;
 }
 
 .announcement::-webkit-scrollbar-thumb {
-    background: #007bff;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border-radius: 10px;
 }
 
 /* ===== RULES ===== */
 .rules {
-    background: linear-gradient(135deg, #ffffff, #f8fbff);
-    padding: 16px;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    background: white;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     transition: all 0.3s ease;
 }
 
@@ -464,13 +485,35 @@ body {
             <p><strong>University of Cebu</strong><br>College of Information & Computer Studies</p>
             <p><strong>Laboratory Rules and Regulations</strong></p>
             <ol>
-                <li>Maintain silence, proper decorum, and discipline inside the laboratory.</li>
-                <li>Games are not allowed inside the lab.</li>
-                <li>Surfing the Internet is allowed only with the permission of the instructor.</li>
+                <li>Maintain silence, proper decorum, and discipline inside the laboratory. Mobile phones, walkmans and other personal pieces of equipment must be switched off.</li>
+                <li>Games are not allowed inside the lab. This includes computer-related games, card games and other games that may disturb the operation of the lab.</li>
+                <li>Surfing the Internet is allowed only with the permission of the instructor. Downloading and installing of software are strictly prohibited.</li>
+                <li>Getting access to other websites not related to the course (especially pornographic and illicit sites) is strictly prohibited.</li>
+                <li>Deleting computer files and changing the set-up of the computer is a major offense.</li>
+                <li>Observe computer time usage carefully. A fifteen-minute allowance is given for each use. Otherwise, the unit will be given to those who wish to “sit-in”.</li>
+                <li>Observe proper decorum while inside the laboratory.
+            a. Do not get inside the lab unless the instructor is present.
+            b. All bags, knapsacks, and the likes must be deposited at the counter.
+            c. Follow the seating arrangement of your instructor.
+            d. At the end of class, all software programs must be closed.
+            e. Return all chairs to their proper places after using.
+            </li>
+                <li>Chewing gum, eating, drinking, smoking, and other forms of vandalism are prohibited inside the lab.</li>
+                <li>Anyone causing a continual disturbance will be asked to leave the lab. Acts or gestures offensive to the members of the community, including public display of physical intimacy, are not tolerated.</li>
+                <li>Persons exhibiting hostile or threatening behavior such as yelling, swearing, or disregarding requests made by lab personnel will be asked to leave the lab.</li>
+                <li>For serious offense, the lab personnel may call the Civil Security Office (CSU) for assistance.</li>
+                <li>Any technical problem or difficulty must be addressed to the laboratory supervisor, student assistant or instructor immediately.</li>
+
             </ol>
         </div>
     </div>
 </div>
+
+<?php if(isset($_SESSION['last_logout_time'])): ?>
+<div style="padding:10px; background:#d4edda; color:#155724; margin:10px auto; max-width:600px; border-radius:5px; text-align:center;">
+    Admin last logged out at: <strong><?= $_SESSION['last_logout_time']; ?></strong>
+</div>
+<?php unset($_SESSION['last_logout_time']); endif; ?>
 
 </body>
 </html>

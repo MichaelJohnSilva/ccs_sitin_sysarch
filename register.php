@@ -7,6 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $lastName = trim($_POST['lastName']);
     $firstName = trim($_POST['firstName']);
     $middleName = trim($_POST['middleName']);
+    $yearLevel = trim($_POST['yearLevel']); // <-- NEW
     $course = trim($_POST['course']);
     $email = trim($_POST['email']);
     $password = trim($_POST['password']);
@@ -19,12 +20,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-        $sql = "INSERT INTO students 
-        (id_number, last_name, first_name, middle_name, course, email, password, address)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    // Make sure your `students` table has a `year_level` column
+    $sql = "INSERT INTO students 
+        (id_number, last_name, first_name, middle_name, year_level, course, email, password, address)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssssssss", $idNumber, $lastName, $firstName, $middleName, $course, $email, $hashedPassword, $address);
+    $stmt->bind_param("sssssssss", $idNumber, $lastName, $firstName, $middleName, $yearLevel, $course, $email, $hashedPassword, $address);
 
     if ($stmt->execute()) {
         echo "<script>
