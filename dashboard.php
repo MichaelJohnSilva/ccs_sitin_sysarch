@@ -784,11 +784,5 @@ function markRead(idNumber, redirect) {
 </div>
 <?php unset($_SESSION['last_logout_time']); endif; ?>
 
-<?php if(isset($_SESSION['last_logout_time'])): ?>
-<div style="padding:10px; background:#d4edda; color:#155724; margin:10px auto; max-width:600px; border-radius:5px; text-align:center;">
-    Admin last logged out at: <strong><?= $_SESSION['last_logout_time']; ?></strong>
-</div>
-<?php unset($_SESSION['last_logout_time']); endif; ?>
-
 </body>
 </html>

@@ -681,60 +681,6 @@ Update Student
 </div>
 </div>
 
-<!-- ADD STUDENTS -->
- <div id="addStudentModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeAddStudent()">&times;</span>
-    <h2>Add Student</h2>
-
-   <form method="POST" style="display:grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-    <input type="text" name="id_number" placeholder="ID Number" required>
-    <input type="text" name="year_level" placeholder="Year Level" required>
-
-    <input type="text" name="first_name" placeholder="First Name" required>
-    <input type="text" name="course" placeholder="Course" required>
-
-    <input type="text" name="middle_name" placeholder="Middle Name">
-    <input type="text" name="last_name" placeholder="Last Name" required>
-
-    <input type="email" name="email" placeholder="Email" required>
-    <input type="password" name="password" placeholder="Password" required>
-
-    <!-- Full-width button -->
-    <button type="submit" name="add_student" class="btn-save" style="grid-column: 1 / -1; margin-top: 10px;">
-            Save Student
-    </button>
-    </form>
-  </div>
-</div>
-
-<div id="editStudentModal" class="modal">
-<div class="modal-content">
-<span class="close" onclick="closeEditStudent()">&times;</span>
-<h2>Edit Student</h2>
-
-<form method="POST" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-
-<input type="hidden" name="edit_id" id="edit_id">
-
-<input type="text" name="edit_first" id="edit_first" placeholder="First Name">
-<input type="text" name="edit_middle" id="edit_middle" placeholder="Middle Name">
-
-<input type="text" name="edit_last" id="edit_last" placeholder="Last Name">
-<input type="text" name="edit_year" id="edit_year" placeholder="Year Level">
-
-<input type="text" name="edit_course" id="edit_course" placeholder="Course">
-<input type="text" name="edit_remaining" id="edit_remaining" placeholder="Remaining Session">
-
-<button type="submit" name="update_student" 
-style="grid-column:1/-1;" class="submit-btn">
-Update Student
-</button>
-
-</form>
-</div>
-</div>
-
 <!-- SEARCH MODAL -->
 <div id="searchModal" class="modal">
   <div class="modal-content">
@@ -896,30 +842,6 @@ window.onclick = function(event) {
 
 function closeSitInForm(){
     closeSitIn();
-}
-
-function openAddStudent(){
-    document.getElementById("addStudentModal").classList.add("show");
-}
-
-function closeAddStudent(){
-    document.getElementById("addStudentModal").classList.remove("show");
-}
-
-function openEditStudent(id, first, middle, last, year, course, remaining){
-    document.getElementById("editStudentModal").classList.add("show");
-
-    document.getElementById("edit_id").value = id;
-    document.getElementById("edit_first").value = first;
-    document.getElementById("edit_middle").value = middle;
-    document.getElementById("edit_last").value = last;
-    document.getElementById("edit_year").value = year;
-    document.getElementById("edit_course").value = course;
-    document.getElementById("edit_remaining").value = remaining;
-}
-
-function closeEditStudent(){
-    document.getElementById("editStudentModal").classList.remove("show");
 }
 
 function openAddStudent(){
