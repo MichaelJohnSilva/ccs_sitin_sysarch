@@ -3,6 +3,6 @@ session_start();
 include "config.php";
 
 session_destroy();
-header("Location: login.html");
+header("Location: login.php");
 exit();
 ?>
