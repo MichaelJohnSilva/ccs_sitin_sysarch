@@ -61,7 +61,7 @@ if ($leaderboardResult && $leaderboardResult->num_rows > 0) {
 }
 
 foreach ($userStats as &$user) {
-    $user['points'] = floor($user['total_hours'] / 3);
+    $user['points'] = floor($user['total_sessions'] / 3);
     if (!empty($user['labs'])) {
         arsort($user['labs']);
         $user['most_visited_lab'] = key($user['labs']);
@@ -121,11 +121,26 @@ if(isset($_GET['delete'])){
     $id = intval($_GET['delete']);
 
     $stmt = $conn->prepare("DELETE FROM announcements WHERE id=?");
-    $stmt->bind_param("i",$id);
-    $stmt->execute();
-    $stmt->close();
+    if ($stmt === false) {
+        error_log("Prepare failed: " . $conn->error);
+        $_SESSION['error'] = "Database prepare error.";
+    } else {
+        $stmt->bind_param("i", $id);
+        if (!$stmt->execute()) {
+            error_log("Delete execute failed: " . $stmt->error);
+            $_SESSION['error'] = "Delete failed: " . $stmt->error;
+        } else {
+            $affected = $stmt->affected_rows;
+            if ($affected > 0) {
+                $_SESSION['success'] = "Announcement deleted successfully ($affected row).";
+            } else {
+                $_SESSION['error'] = "No announcement found with ID $id.";
+            }
+        }
+        $stmt->close();
+    }
 
-    header("Location: admin_dashboard.php");
+    header("Location: admin_dashboard.php?deleted=1");
     exit();
 }
 
@@ -145,7 +160,21 @@ if(isset($_POST['search'])){
 
     $stmt->bind_param("s", $keyword);
     $stmt->execute();
-    $searchResults = $stmt->get_result();
+    $result = $stmt->get_result();
+    
+    $searchResultsArray = [];
+    while ($row = $result->fetch_assoc()) {
+        $idNum = $row['id_number'];
+        $activeCheck = $conn->prepare("SELECT id, lab, computer_number, time_in FROM sitin_records WHERE id_number = ? AND status = 'Active' AND time_out IS NULL");
+        $activeCheck->bind_param("s", $idNum);
+        $activeCheck->execute();
+        $activeResult = $activeCheck->get_result();
+        $row['active_session'] = $activeResult->fetch_assoc();
+        $activeCheck->close();
+        $searchResultsArray[] = $row;
+    }
+    $stmt->close();
+    $searchResults = $searchResultsArray;
 }
 
 /* CHART DATA (LANGUAGE USAGE) */
@@ -667,9 +696,11 @@ table tr:hover td {
 }
 
 .delete-btn {
+    display: inline-block;
     padding: 6px 12px;
     background: #dc3545;
     color: white;
+    text-decoration: none;
     border: none;
     border-radius: 5px;
     font-size: 12px;
@@ -729,7 +760,6 @@ table tr:hover td {
                 <li><a href="students.php">Students</a></li>
                 <li><a href="sit_in.php">Sit-in</a></li>
                 <li><a href="view_sitin_records.php">View Sit-in Records</a></li>
-        <li><a href="#">Sit-in Reports</a></li>
         <li><a href="feedback_reports.php">Feedback Reports</a></li>
         <li><a href="admin_reservations.php">Reservation</a></li>
         <li><a href="logout.php">Logout</a></li>
@@ -764,7 +794,7 @@ table tr:hover td {
     <?php if ($searchResults !== null): ?>
       <h3>Search Results:</h3>
 
-      <?php if ($searchResults->num_rows > 0): ?>
+      <?php if (count($searchResults) > 0): ?>
         <table>
           <thead>
             <tr>
@@ -774,12 +804,13 @@ table tr:hover td {
               <th>Last Name</th>
               <th>Course</th>
               <th>Remaining Session</th>
+              <th>Status</th>
               <th>Action</th>
             </tr>
           </thead>
 
           <tbody>
-            <?php while ($row = $searchResults->fetch_assoc()): ?>
+            <?php foreach ($searchResults as $row): ?>
               <tr>
                 <td><?= htmlspecialchars($row['id_number']); ?></td>
                 <td><?= htmlspecialchars($row['first_name']); ?></td>
@@ -787,19 +818,35 @@ table tr:hover td {
                 <td><?= htmlspecialchars($row['last_name']); ?></td>
                 <td><?= htmlspecialchars($row['course']); ?></td>
                 <td><?= htmlspecialchars($row['sessions_remaining'] ?? 30); ?></td>
-
                 <td>
-                  <button type="button" class="btn-search"
-                    onclick="selectStudent(
-                      '<?= $row['id_number']; ?>',
-                      '<?= $row['first_name'].' '.$row['middle_name'].' '.$row['last_name']; ?>',
-                      '<?= $row['sessions_remaining'] ?? 30; ?>'
-                    )">
-                    Sit In
-                  </button>
+                  <?php if (!empty($row['active_session'])): ?>
+                    <span style="background: #dc3545; color: white; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600;">
+                      Active (<?= htmlspecialchars($row['active_session']['lab']); ?>-<?= htmlspecialchars($row['active_session']['computer_number']); ?>)
+                    </span>
+                  <?php else: ?>
+                    <span style="background: #28a745; color: white; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600;">
+                      Available
+                    </span>
+                  <?php endif; ?>
+                </td>
+                <td>
+                  <?php if (!empty($row['active_session'])): ?>
+                    <button type="button" class="btn-search" style="background: #dc3545; cursor: not-allowed;" disabled>
+                      Active
+                    </button>
+                  <?php else: ?>
+                    <button type="button" class="btn-search"
+                      onclick="selectStudent(
+                        '<?= $row['id_number']; ?>',
+                        '<?= $row['first_name'].' '.$row['middle_name'].' '.$row['last_name']; ?>',
+                        '<?= $row['sessions_remaining'] ?? 30; ?>'
+                      )">
+                      Sit In
+                    </button>
+                  <?php endif; ?>
                 </td>
               </tr>
-            <?php endwhile; ?>
+            <?php endforeach; ?>
           </tbody>
         </table>
       <?php else: ?>
@@ -883,6 +930,8 @@ $current_count = $current->fetch_assoc()['total'];
 $total_count   = $total->fetch_assoc()['total'];
 ?>
 
+<div class="dashboard-title">Statistics</div>
+
 <div class="stats-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
     <div class="stat-card">
         <div class="stat-number"><?php echo $total_students; ?></div>
@@ -898,7 +947,7 @@ $total_count   = $total->fetch_assoc()['total'];
     </div>
     <div class="stat-card" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">
         <div class="stat-number" style="font-size: 28px;"><?php echo htmlspecialchars($mostVisitedLab['lab'] ?? 'N/A'); ?></div>
-        <div class="stat-label">Top Lab (<?php echo $mostVisitedLab['total_visits'] ?? 0; ?> vis)</div>
+        <div class="stat-label">Top Lab (<?php echo $mostVisitedLab['total_visits'] ?? 0; ?> visits)</div>
     </div>
 </div>
 
@@ -946,7 +995,7 @@ if(isset($_GET['search_user']) && trim($_GET['search_user']) !== '') {
                 <th style="color: white; padding: 14px; font-size: 11px; text-transform: uppercase; width: 50px;">#</th>
                 <th style="color: white; padding: 14px; font-size: 11px; text-transform: uppercase;">Student</th>
                 <th style="color: white; padding: 14px; font-size: 11px; text-transform: uppercase;">Course</th>
-                <th style="color: white; padding: 14px; font-size: 11px; text-transform: uppercase;">Points (3hrs=1pt)</th>
+                <th style="color: white; padding: 14px; font-size: 11px; text-transform: uppercase;">Points (3 Sessions=1pt)</th>
                 <th style="color: white; padding: 14px; font-size: 11px; text-transform: uppercase;">Hours</th>
                 <th style="color: white; padding: 14px; font-size: 11px; text-transform: uppercase;">Tasks Done</th>
                 <th style="color: white; padding: 14px; font-size: 11px; text-transform: uppercase;">Favorite Lab</th>
@@ -1010,6 +1059,20 @@ if(isset($_GET['search_user']) && trim($_GET['search_user']) !== '') {
 
 <div class="dashboard-card">
 
+<?php
+// Flash messages
+if (isset($_SESSION['success'])) {
+    echo '<div style="background: #d4edda; color: #155724; padding: 12px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #28a745;"><i class="fas fa-check-circle"></i> ' . htmlspecialchars($_SESSION['success']) . '</div>';
+    unset($_SESSION['success']);
+}
+if (isset($_SESSION['error'])) {
+    echo '<div style="background: #f8d7da; color: #721c24; padding: 12px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #dc3545;"><i class="fas fa-exclamation-triangle"></i> ' . htmlspecialchars($_SESSION['error']) . '</div>';
+    unset($_SESSION['error']);
+}
+if (isset($_GET['deleted'])) {
+    echo '<div style="background: #d4edda; color: #155724; padding: 12px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #28a745;"><i class="fas fa-check-circle"></i> Announcement deleted successfully.</div>';
+}
+?>
 <div class="dashboard-title">Announcement</div>
 
 <form method="POST" class="announcement-form">
@@ -1032,10 +1095,11 @@ if(isset($_GET['search_user']) && trim($_GET['search_user']) !== '') {
 
 <p><?php echo htmlspecialchars($row['message']); ?></p>
 
-<button class="delete-btn"
-onclick="deleteAnnouncement(<?php echo $row['id']; ?>)">
+<a href="admin_dashboard.php?delete=<?php echo $row['id']; ?>" 
+   class="delete-btn" 
+   onclick="return confirm('Delete this announcement?');">
 Delete
-</button>
+</a>
 
 </div>
 
@@ -1096,9 +1160,10 @@ openSearch();
 <?php endif; ?>
 
 /* DELETE ANNOUNCEMENT */
-function deleteAnnouncement(id){
+function deleteAnnouncement(btn, id){
     if(confirm("Delete this announcement?")){
-        window.location = "admin_dashboard.php?delete=" + id;
+        var url = "admin_dashboard.php?delete=" + encodeURIComponent(id);
+        window.location.href = url;
     }
 }
 
